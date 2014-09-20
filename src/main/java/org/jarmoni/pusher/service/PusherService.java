@@ -18,7 +18,7 @@ public class PusherService {
 
 	public PusherService(final String appHome) {
 		final Path path = Paths.get(Preconditions.checkNotNull(appHome));
-		if (!Files.isDirectory(this.appHome)) {
+		if (Files.isDirectory(path)) {
 			this.appHome = path;
 		}
 		else {

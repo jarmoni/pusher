@@ -2,12 +2,13 @@ package org.jarmoni.pusher.controller;
 
 import java.util.stream.Collectors;
 
-import org.jarmoni.pusher.service.PusherService;
+import org.jarmoni.pusher.service.IPusherService;
 import org.jarmoni.resource.Repository;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class RepositoriesController {
 
 	@Autowired
-	private PusherService pusherService;
+	private IPusherService pusherService;
 
-	@RequestMapping("/")
+	@RequestMapping("")
+	@ResponseBody
 	public Representation<Repository> getRepositories() {
 		return Representation
 				.<Repository> builder()

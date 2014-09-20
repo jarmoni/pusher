@@ -30,6 +30,7 @@
 		<restxe.version>1.0.0</restxe.version>
 		<spring.boot.version>1.1.6.RELEASE</spring.boot.version>
 		<guava.version>18.0</guava.version>
+		<jgit.version>3.5.0.201409071800-rc1</jgit.version>
 	</properties>
 
 	<build>
@@ -76,6 +77,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+			<version>${jgit.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
