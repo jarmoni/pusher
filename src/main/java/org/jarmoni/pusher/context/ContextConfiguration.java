@@ -21,7 +21,7 @@ public class ContextConfiguration {
 	}
 
 	@Bean
-	public LinkFactory linkBuilder() {
+	public LinkFactory linkFactory() {
 		return new LinkFactory(this.urlResolver());
 	}
 

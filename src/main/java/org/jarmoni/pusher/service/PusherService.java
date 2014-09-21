@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jarmoni.resource.Repository;
 
@@ -43,5 +44,22 @@ public class PusherService implements IPusherService {
 	@Override
 	public Repository getRepository(final String name) {
 		return this.repositories.stream().filter(rep -> name.equals(rep.name)).findFirst().get();
+	}
+
+	@Override
+	public Repository createRepository(final Repository repository) {
+		this.repositories.add(repository);
+		return repository;
+	}
+
+	@Override
+	public void deleteRepository(final String name) {
+		this.repositories.stream().filter(rep -> !rep.name.equals(name)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Repository updateRepository(final Repository repository) {
+		this.repositories.stream().filter(rep -> !rep.name.equals(repository.name)).collect(Collectors.toList()).add(repository);
+		return repository;
 	}
 }

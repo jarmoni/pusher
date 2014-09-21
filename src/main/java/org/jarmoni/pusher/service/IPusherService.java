@@ -9,4 +9,10 @@ public interface IPusherService {
 	List<Repository> getRepositories();
 
 	Repository getRepository(final String name);
+
+	Repository createRepository(Repository repository);
+
+	void deleteRepository(final String name);
+
+	Repository updateRepository(final Repository repository);
 }
