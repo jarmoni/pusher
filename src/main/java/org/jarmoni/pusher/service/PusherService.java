@@ -10,7 +10,7 @@ import org.jarmoni.resource.Repository;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
-public class PusherService {
+public class PusherService implements IPusherService {
 
 	private Path appHome;
 
@@ -35,10 +35,12 @@ public class PusherService {
 		return this.appHome.toString();
 	}
 
+	@Override
 	public List<Repository> getRepositories() {
 		return this.repositories;
 	}
 
+	@Override
 	public Repository getRepository(final String name) {
 		return this.repositories.stream().filter(rep -> name.equals(rep.name)).findFirst().get();
 	}
