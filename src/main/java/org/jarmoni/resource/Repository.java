@@ -6,5 +6,5 @@ public class Repository {
 	public String path;
 	public boolean autoCommit;
 	public boolean autoPush;
-
+	public boolean autoPull;
 }
