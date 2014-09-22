@@ -7,15 +7,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.jarmoni.resource.Repository;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import com.google.common.collect.Lists;
 
 public class PusherServiceTest {
 
@@ -75,17 +72,6 @@ public class PusherServiceTest {
 
 	@Test
 	public void testSaveRepositories() throws Exception {
-		final Repository r1 = new Repository();
-		r1.autoCommit = true;
-		r1.autoPush = false;
-		r1.name = "/home/johndoe/myrepos";
-
-		final Repository r2 = new Repository();
-		r2.autoCommit = true;
-		r2.autoPush = true;
-		r2.name = "/usr/local/another_repos";
-
-		final List<Repository> reposList = Lists.newArrayList(r1, r2);
 		assertFalse(Files.exists(reposFile));
 		this.pusherService.saveRepositories();
 		assertTrue(Files.exists(reposFile));
