@@ -3,6 +3,7 @@ package org.jarmoni.pusher.service;
 import static org.jarmoni.pusher.service.PusherService.REPOS_FILE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
@@ -16,10 +17,10 @@ import org.junit.rules.TemporaryFolder;
 
 public class PusherServiceTest {
 
-	//CHECKSTYLE:OFF
+	// CHECKSTYLE:OFF
 	@Rule
 	public TemporaryFolder tf = new TemporaryFolder();
-	//CHECKSTYLE:ON
+	// CHECKSTYLE:ON
 
 	private Path appHome;
 	private Path reposFile;
@@ -60,14 +61,19 @@ public class PusherServiceTest {
 
 	@Test
 	public void testCreateRepository() throws Exception {
-		final Repository r1 = new Repository();
-		r1.autoCommit = true;
-		r1.autoPush = false;
-		r1.name = "/home/johndoe/myrepos";
-
 		assertEquals(0, this.pusherService.getRepositories().size());
-		this.pusherService.createRepository(r1);
+		this.pusherService.createRepository(this.createRepository());
 		assertEquals(1, this.pusherService.getRepositories().size());
+	}
+
+	@Test
+	public void testUpdateRepository() throws Exception {
+		this.pusherService.createRepository(this.createRepository());
+		final Repository repos = this.pusherService.getRepository("myrepos");
+		assertNotSame("/one/two/three", repos.path);
+		repos.path = "/one/two/three";
+		this.pusherService.updateRepository(repos);
+		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").path);
 	}
 
 	@Test
@@ -85,5 +91,14 @@ public class PusherServiceTest {
 		this.pusherService.saveRepositories();
 		assertTrue(Files.exists(reposFile));
 		assertFalse(Files.size(this.reposFile) == 0L);
+	}
+
+	private Repository createRepository() {
+		final Repository r1 = new Repository();
+		r1.autoCommit = true;
+		r1.autoPush = false;
+		r1.name = "myrepos";
+		r1.path = "/home/johndoe/myrepos";
+		return r1;
 	}
 }

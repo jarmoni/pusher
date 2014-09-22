@@ -28,10 +28,12 @@ public class PusherService implements IPusherService {
 		final Path path = Paths.get(Preconditions.checkNotNull(appHome));
 		if (Files.isDirectory(path)) {
 			this.appHome = path;
-		} else {
+		}
+		else {
 			try {
 				this.appHome = Files.createDirectory(path);
-			} catch (final Throwable t) {
+			}
+			catch (final Throwable t) {
 				Throwables.propagate(t);
 			}
 		}
@@ -44,7 +46,8 @@ public class PusherService implements IPusherService {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
 				final ObjectMapper mapper = new ObjectMapper();
 				this.repositories = mapper.readValue(is, List.class);
-			} catch (final Throwable t) {
+			}
+			catch (final Throwable t) {
 				Throwables.propagate(t);
 			}
 		}
@@ -54,7 +57,8 @@ public class PusherService implements IPusherService {
 		try (OutputStream os = Files.newOutputStream(this.reposFile)) {
 			final ObjectMapper mapper = new ObjectMapper();
 			mapper.writeValue(os, this.repositories);
-		} catch (final Throwable t) {
+		}
+		catch (final Throwable t) {
 			Throwables.propagate(t);
 		}
 	}

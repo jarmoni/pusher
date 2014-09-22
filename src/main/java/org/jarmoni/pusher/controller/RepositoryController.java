@@ -49,4 +49,9 @@ public class RepositoryController {
 				.item(Item.<Repository> builder().data(this.pusherService.updateRepository(repository)).build())
 				.links(this.repositoryLinkCreator.createLinks(repository.name)).build();
 	}
+
+	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.GET)
+	public void triggerRepository(@PathVariable final String name) {
+		this.pusherService.deleteRepository(name);
+	}
 }
