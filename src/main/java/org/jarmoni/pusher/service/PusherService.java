@@ -1,7 +1,5 @@
 package org.jarmoni.pusher.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -12,8 +10,6 @@ import java.util.stream.Collectors;
 
 import org.jarmoni.resource.Repository;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
@@ -42,6 +38,7 @@ public class PusherService implements IPusherService {
 		this.reposFile = this.appHome.resolve(REPOS_FILE_NAME);
 	}
 
+	@SuppressWarnings("unchecked")
 	void reloadRepositories() {
 		if (Files.isRegularFile(this.reposFile)) {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
@@ -97,30 +94,8 @@ public class PusherService implements IPusherService {
 		return repository;
 	}
 
-	public static void main(final String[] args) {
-		final Repository r1 = new Repository();
-		r1.autoCommit = true;
-		r1.autoPush = false;
-		r1.name = "/home/johndoe/myrepos";
-
-		final Repository r2 = new Repository();
-		r2.autoCommit = true;
-		r2.autoPush = true;
-		r2.name = "/usr/local/another_repos";
-
-		final List<Repository> reposList = Lists.newArrayList(r1, r2);
-		final ObjectMapper m = new ObjectMapper();
-		try {
-			m.writeValue(new File("/tmp/aaaaaaaaaaaaaaaaaa.json"), reposList);
-		} catch (final JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	@Override
+	public void triggerRepository(final String name) {
+		// TODO Do the trigger-stuff here.....
 	}
 }

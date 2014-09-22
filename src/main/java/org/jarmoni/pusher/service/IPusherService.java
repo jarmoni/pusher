@@ -15,4 +15,6 @@ public interface IPusherService {
 	void deleteRepository(final String name);
 
 	Repository updateRepository(final Repository repository);
+
+	void triggerRepository(String name);
 }

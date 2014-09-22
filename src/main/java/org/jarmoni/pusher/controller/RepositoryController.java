@@ -20,6 +20,7 @@ public class RepositoryController {
 	public static final String PATH_REPOSITORY_GET = PATH_REPOSITORY + "/get/{name}";
 	public static final String PATH_REPOSITORY_DELETE = PATH_REPOSITORY + "/delete/{name}";
 	public static final String PATH_REPOSITORY_UPDATE = PATH_REPOSITORY + "/update";
+	public static final String PATH_REPOSITORY_TRIGGER = PATH_REPOSITORY + "/trigger/{name}";
 
 	@Autowired
 	private IPusherService pusherService;
