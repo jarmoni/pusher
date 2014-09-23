@@ -31,6 +31,7 @@
 		<spring.boot.version>1.1.6.RELEASE</spring.boot.version>
 		<guava.version>18.0</guava.version>
 		<jgit.version>3.5.0.201409071800-rc1</jgit.version>
+		<easymock.version>3.2</easymock.version>
 	</properties>
 
 	<build>
@@ -92,6 +93,11 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${easymock.version}</version>
 		</dependency>
 	</dependencies>
 </project>
