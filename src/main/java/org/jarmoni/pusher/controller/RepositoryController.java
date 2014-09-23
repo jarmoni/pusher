@@ -39,7 +39,8 @@ public class RepositoryController {
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name))
 						.links(this.repositoryLinkCreator.createLinks(name)).build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF, PATH_REPOSITORY_GET, HttpVerb.GET)).build();
+				.link(this.linkFactory.createLink(LinkType.SELF_REF,
+						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_DELETE, method = RequestMethod.DELETE)

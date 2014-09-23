@@ -24,9 +24,13 @@ public class RepositoryLinkCreator {
 
 	public List<Link> createLinks(final String name) {
 		return Lists.newArrayList(
-				this.linkFactory.createLink(LinkType.READ, PATH_REPOSITORY_GET.replace("{name}", name), HttpVerb.GET),
+				this.linkFactory.createLink(LinkType.READ, this.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET),
 				this.linkFactory.createLink(LinkType.DELETE, PATH_REPOSITORY_DELETE.replace("{name}", name), HttpVerb.DELETE),
 				this.linkFactory.createLink(LinkType.UPDATE, PATH_REPOSITORY_UPDATE, HttpVerb.PUT));
+	}
+
+	public String replaceNameVariable(final String path, final String name) {
+		return path.replace("{name}", name);
 	}
 
 }
