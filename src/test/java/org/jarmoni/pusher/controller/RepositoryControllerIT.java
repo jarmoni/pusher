@@ -1,5 +1,8 @@
 package org.jarmoni.pusher.controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.net.URI;
 
 import org.easymock.EasyMock;
@@ -32,13 +35,6 @@ public class RepositoryControllerIT {
 		SpringApplication.exit(this.context, () -> 0);
 	}
 
-	/*
-	 * public Representation<Repository> getRepository(@PathVariable final
-	 * String name) { return Representation.<Repository> builder()
-	 * .item(Item.<Repository>
-	 * builder().data(this.pusherService.getRepository(name)).build())
-	 * .links(this.repositoryLinkCreator.createLinks(name)).build(); }
-	 */
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetRepository() throws Exception {
@@ -47,6 +43,10 @@ public class RepositoryControllerIT {
 		final Representation<Repository> repos = this.restTemplate.getForEntity(
 				new URI("http://localhost:9899/api/repository/get/myrepos"), Representation.class).getBody();
 		EasyMock.verify(this.pusherService);
+		assertEquals(1, repos.getLinks().size());
+		assertEquals(1, repos.getItems().size());
+		assertNotNull(repos.getItems().get(0).getData());
+		assertEquals(3, repos.getItems().get(0).getLinks().size());
 	}
 
 }
