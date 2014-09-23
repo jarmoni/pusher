@@ -62,13 +62,13 @@ public class PusherServiceTest {
 	@Test
 	public void testCreateRepository() throws Exception {
 		assertEquals(0, this.pusherService.getRepositories().size());
-		this.pusherService.createRepository(this.createRepository());
+		this.pusherService.createRepository(createRepository());
 		assertEquals(1, this.pusherService.getRepositories().size());
 	}
 
 	@Test
 	public void testUpdateRepository() throws Exception {
-		this.pusherService.createRepository(this.createRepository());
+		this.pusherService.createRepository(createRepository());
 		final Repository repos = this.pusherService.getRepository("myrepos");
 		assertNotSame("/one/two/three", repos.path);
 		repos.path = "/one/two/three";
@@ -93,7 +93,7 @@ public class PusherServiceTest {
 		assertFalse(Files.size(this.reposFile) == 0L);
 	}
 
-	private Repository createRepository() {
+	public static Repository createRepository() {
 		final Repository r1 = new Repository();
 		r1.autoCommit = true;
 		r1.autoPush = false;
