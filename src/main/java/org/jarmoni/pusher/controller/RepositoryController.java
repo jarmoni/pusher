@@ -3,8 +3,10 @@ package org.jarmoni.pusher.controller;
 import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
 import org.jarmoni.pusher.service.IPusherService;
 import org.jarmoni.resource.Repository;
+import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.LinkFactory;
+import org.jarmoni.restxe.common.LinkType;
 import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +34,12 @@ public class RepositoryController {
 	@RequestMapping(value = PATH_REPOSITORY_GET, method = RequestMethod.GET)
 	@ResponseBody
 	public Representation<Repository> getRepository(@PathVariable final String name) {
-		return Representation.<Repository> builder()
-				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name)).build())
-				.links(this.repositoryLinkCreator.createLinks(name)).build();
+
+		return Representation
+				.<Repository> builder()
+				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name))
+						.links(this.repositoryLinkCreator.createLinks(name)).build())
+				.link(this.linkFactory.createLink(LinkType.SELF_REF, PATH_REPOSITORY_GET, HttpVerb.GET)).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_DELETE, method = RequestMethod.DELETE)

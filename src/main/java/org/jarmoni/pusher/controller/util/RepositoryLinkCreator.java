@@ -7,6 +7,7 @@ import static org.jarmoni.pusher.controller.RepositoryController.PATH_REPOSITORY
 import java.util.List;
 import java.util.Objects;
 
+import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Link;
 import org.jarmoni.restxe.common.LinkFactory;
 import org.jarmoni.restxe.common.LinkType;
@@ -22,9 +23,10 @@ public class RepositoryLinkCreator {
 	}
 
 	public List<Link> createLinks(final String name) {
-		return Lists.newArrayList(this.linkFactory.createLink(LinkType.SELF_REF, PATH_REPOSITORY_GET.replace("{name}", name)),
-				this.linkFactory.createLink(LinkType.DELETE, PATH_REPOSITORY_DELETE.replace("{name}", name)),
-				this.linkFactory.createLink(LinkType.UPDATE, PATH_REPOSITORY_UPDATE));
+		return Lists.newArrayList(
+				this.linkFactory.createLink(LinkType.READ, PATH_REPOSITORY_GET.replace("{name}", name), HttpVerb.GET),
+				this.linkFactory.createLink(LinkType.DELETE, PATH_REPOSITORY_DELETE.replace("{name}", name), HttpVerb.DELETE),
+				this.linkFactory.createLink(LinkType.UPDATE, PATH_REPOSITORY_UPDATE, HttpVerb.PUT));
 	}
 
 }

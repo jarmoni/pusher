@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
 import org.jarmoni.pusher.service.IPusherService;
 import org.jarmoni.resource.Repository;
+import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.LinkFactory;
 import org.jarmoni.restxe.common.LinkType;
@@ -39,10 +40,10 @@ public class RepositoriesController {
 				.items(this.pusherService
 						.getRepositories()
 						.stream()
-						.map(rep -> Item.<Repository> builder().data(rep)
+						.map(rep -> Item.<Repository> builder().data(rep).links(this.repositoryLinkCreator.createLinks(rep.name))
 								.build()).collect(Collectors.toList()))
 								.links(Lists.newArrayList(this.linkFactory.createLink(LinkType.SELF_REF,
-										PATH_REPOSITORIES_LIST), this.linkFactory.createLink(LinkType.CREATE, PATH_REPOSITORIES_CREATE))).build();
+										PATH_REPOSITORIES_LIST, HttpVerb.GET), this.linkFactory.createLink(LinkType.CREATE, PATH_REPOSITORIES_CREATE, HttpVerb.POST))).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORIES_CREATE, method = RequestMethod.POST)
