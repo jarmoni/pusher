@@ -1,6 +1,5 @@
 package org.jarmoni.resource;
 
-
 public class Repository {
 
 	public String name;
@@ -11,9 +10,8 @@ public class Repository {
 
 	@Override
 	public String toString() {
-		return "Repository [name=" + name + ", path=" + path + ", autoCommit="
-				+ autoCommit + ", autoPush=" + autoPush + ", autoPull="
-				+ autoPull + "]";
+		return "Repository [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoPush=" + autoPush
+				+ ", autoPull=" + autoPull + "]";
 	}
 
 	@Override
@@ -53,14 +51,16 @@ public class Repository {
 			if (other.name != null) {
 				return false;
 			}
-		} else if (!name.equals(other.name)) {
+		}
+		else if (!name.equals(other.name)) {
 			return false;
 		}
 		if (path == null) {
 			if (other.path != null) {
 				return false;
 			}
-		} else if (!path.equals(other.path)) {
+		}
+		else if (!path.equals(other.path)) {
 			return false;
 		}
 		return true;

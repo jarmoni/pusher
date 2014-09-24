@@ -19,16 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RepositoryController {
 
-	public static final String PATH_REPOSITORY = Paths.PATH_API_ROOT
-			+ "/repository";
-	public static final String PATH_REPOSITORY_GET = PATH_REPOSITORY
-			+ "/get/{name}";
-	public static final String PATH_REPOSITORY_DELETE = PATH_REPOSITORY
-			+ "/delete/{name}";
-	public static final String PATH_REPOSITORY_UPDATE = PATH_REPOSITORY
-			+ "/update";
-	public static final String PATH_REPOSITORY_TRIGGER = PATH_REPOSITORY
-			+ "/trigger/{name}";
+	public static final String PATH_REPOSITORY = Paths.PATH_API_ROOT + "/repository";
+	public static final String PATH_REPOSITORY_GET = PATH_REPOSITORY + "/get/{name}";
+	public static final String PATH_REPOSITORY_DELETE = PATH_REPOSITORY + "/delete/{name}";
+	public static final String PATH_REPOSITORY_UPDATE = PATH_REPOSITORY + "/update";
+	public static final String PATH_REPOSITORY_TRIGGER = PATH_REPOSITORY + "/trigger/{name}";
 
 	@Autowired
 	private IPusherService pusherService;
@@ -39,19 +34,14 @@ public class RepositoryController {
 
 	@RequestMapping(value = PATH_REPOSITORY_GET, method = RequestMethod.GET)
 	@ResponseBody
-	public Representation<Repository> getRepository(
-			@PathVariable final String name) {
+	public Representation<Repository> getRepository(@PathVariable final String name) {
 
 		return Representation
 				.<Repository> builder()
-				.item(Item.<Repository> builder()
-						.data(this.pusherService.getRepository(name))
-						.links(this.repositoryLinkCreator.createLinks(name))
-						.build())
-						.link(this.linkFactory.createLink(LinkType.SELF_REF,
-								this.repositoryLinkCreator.replaceNameVariable(
-										PATH_REPOSITORY_GET, name), HttpVerb.GET))
-										.build();
+				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name))
+						.links(this.repositoryLinkCreator.createLinks(name)).build())
+				.link(this.linkFactory.createLink(LinkType.SELF_REF,
+						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_DELETE, method = RequestMethod.DELETE)
@@ -61,21 +51,15 @@ public class RepositoryController {
 
 	@RequestMapping(value = PATH_REPOSITORY_UPDATE, method = RequestMethod.PUT)
 	@ResponseBody
-	public Representation<Repository> updateRepository(
-			@RequestBody final Repository repository) {
-		final Repository updatedRepos = this.pusherService
-				.updateRepository(repository);
+	public Representation<Repository> updateRepository(@RequestBody final Repository repository) {
+		final Repository updatedRepos = this.pusherService.updateRepository(repository);
 		return Representation
 				.<Repository> builder()
-				.item(Item
-						.<Repository> builder()
-						.data(updatedRepos)
-						.links(this.repositoryLinkCreator
-								.createLinks(updatedRepos.name)).build())
-								.link(this.linkFactory.createLink(LinkType.SELF_REF,
-										this.repositoryLinkCreator.replaceNameVariable(
-												PATH_REPOSITORY_GET, updatedRepos.name), HttpVerb.GET))
-												.build();
+				.item(Item.<Repository> builder().data(updatedRepos)
+						.links(this.repositoryLinkCreator.createLinks(updatedRepos.name)).build())
+				.link(this.linkFactory.createLink(LinkType.SELF_REF,
+						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.name), HttpVerb.GET))
+				.build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.GET)
