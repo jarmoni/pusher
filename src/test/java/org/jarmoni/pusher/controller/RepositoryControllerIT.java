@@ -25,16 +25,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 public class RepositoryControllerIT {
-	private final RestTemplate restTemplate = RestTemplateFactory
-			.createTemplate(Repository.class);
+	private final RestTemplate restTemplate = RestTemplateFactory.createTemplate(Repository.class);
 	private ConfigurableApplicationContext context;
 	private IPusherService pusherService;
 
 	@Before
 	public void setUp() throws Exception {
 		this.context = SpringApplication.run(TstMain.class, new String[0]);
-		this.pusherService = (IPusherService) this.context
-				.getBean("pusherService");
+		this.pusherService = (IPusherService) this.context.getBean("pusherService");
 	}
 
 	@After
@@ -45,18 +43,36 @@ public class RepositoryControllerIT {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetRepository() throws Exception {
-		expect(this.pusherService.getRepository("myrepos")).andReturn(
-				createRepository());
+		expect(this.pusherService.getRepository("myrepos")).andReturn(createRepository());
 		replay(this.pusherService);
-		final Representation<Repository> response = this.restTemplate
-				.getForEntity(
-						new URI(
-								"http://localhost:9899/api/repository/get/myrepos"),
-								Representation.class).getBody();
+		final Representation<Repository> response = this.restTemplate.getForEntity(
+				new URI("http://localhost:9899/api/repository/get/myrepos"), Representation.class).getBody();
 		verify(this.pusherService);
 		assertEquals(1, response.getLinks().size());
 		assertEquals(1, response.getItems().size());
 		assertNotNull(response.getItems().get(0).getData());
+		assertEquals(3, response.getItems().get(0).getLinks().size());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testUpdateRepository() throws Exception {
+		// TODO: Strange beheaviour. Refresh of ApplicationContext seems to fail
+		// if no timeout is set. Check this....
+		Thread.sleep(5000L);
+		final Repository repos = createRepository();
+		final Repository reposReturn = createRepository();
+		reposReturn.autoCommit = !repos.autoCommit;
+
+		expect(this.pusherService.updateRepository(repos)).andReturn(reposReturn);
+		replay(this.pusherService);
+		final Representation<Repository> response = this.restTemplate.exchange(
+				new URI("http://localhost:9899/api/repository/update"), HttpMethod.PUT, new HttpEntity<Repository>(repos),
+				Representation.class).getBody();
+		verify(this.pusherService);
+		assertEquals(1, response.getLinks().size());
+		assertEquals(1, response.getItems().size());
+		assertEquals(response.getItems().get(0).getData(), reposReturn);
 		assertEquals(3, response.getItems().get(0).getLinks().size());
 	}
 
@@ -65,30 +81,8 @@ public class RepositoryControllerIT {
 		this.pusherService.deleteRepository("myrepos");
 		expectLastCall();
 		replay(this.pusherService);
-		this.restTemplate.delete(new URI(
-				"http://localhost:9899/api/repository/delete/myrepos"));
+		this.restTemplate.delete(new URI("http://localhost:9899/api/repository/delete/myrepos"));
 		verify(this.pusherService);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testUpdateRepository() throws Exception {
-		final Repository repos = createRepository();
-		final Repository reposReturn = createRepository();
-		reposReturn.autoCommit = !repos.autoCommit;
-
-		expect(this.pusherService.updateRepository(repos)).andReturn(
-				reposReturn);
-		replay(this.pusherService);
-		final Representation<Repository> response = this.restTemplate.exchange(
-				new URI("http://localhost:9899/api/repository/update"),
-				HttpMethod.PUT, new HttpEntity<Repository>(repos), Representation.class)
-				.getBody();
-		verify(this.pusherService);
-		assertEquals(1, response.getLinks().size());
-		assertEquals(1, response.getItems().size());
-		assertEquals(response.getItems().get(0).getData(), reposReturn);
-		assertEquals(3, response.getItems().get(0).getLinks().size());
 	}
 
 }
