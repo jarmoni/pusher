@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ public class RepositoryController {
 	public static final String PATH_REPOSITORY_GET = PATH_REPOSITORY + "/get/{name}";
 	public static final String PATH_REPOSITORY_DELETE = PATH_REPOSITORY + "/delete/{name}";
 	public static final String PATH_REPOSITORY_UPDATE = PATH_REPOSITORY + "/update";
-	public static final String PATH_REPOSITORY_TRIGGER = PATH_REPOSITORY + "/trigger/{name}";
+	public static final String PATH_REPOSITORY_TRIGGER = PATH_REPOSITORY + "/trigger";
 
 	@Autowired
 	private IPusherService pusherService;
@@ -62,8 +63,9 @@ public class RepositoryController {
 				.build();
 	}
 
-	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.GET)
-	public void triggerRepository(@PathVariable final String name) {
-		this.pusherService.deleteRepository(name);
+	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.POST, params = "name")
+	public Object triggerRepository(@RequestParam final String name) {
+		this.pusherService.triggerRepository(name);
+		return "";
 	}
 }

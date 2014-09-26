@@ -11,6 +11,7 @@ import org.jarmoni.restxe.common.LinkFactory;
 import org.jarmoni.restxe.common.LinkType;
 import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,17 +41,28 @@ public class RepositoriesController {
 				.items(this.pusherService
 						.getRepositories()
 						.stream()
-						.map(rep -> Item.<Repository> builder().data(rep).links(this.repositoryLinkCreator.createLinks(rep.name))
-								.build()).collect(Collectors.toList()))
-								.links(Lists.newArrayList(this.linkFactory.createLink(LinkType.SELF_REF,
-										PATH_REPOSITORIES_LIST, HttpVerb.GET), this.linkFactory.createLink(LinkType.CREATE, PATH_REPOSITORIES_CREATE, HttpVerb.POST))).build();
+						.map(rep -> Item
+								.<Repository> builder()
+								.data(rep)
+								.links(this.repositoryLinkCreator
+										.createLinks(rep.name)).build())
+										.collect(Collectors.toList()))
+										.links(Lists.newArrayList(this.linkFactory
+												.createLink(LinkType.SELF_REF, PATH_REPOSITORIES_LIST,
+														HttpVerb.GET), this.linkFactory.createLink(
+																LinkType.CREATE, PATH_REPOSITORIES_CREATE,
+																HttpVerb.POST))).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORIES_CREATE, method = RequestMethod.POST)
 	@ResponseBody
-	public Representation<Repository> createRepository(final Repository repository) {
+	public Representation<Repository> createRepository(@RequestBody final Repository repository) {
 		this.pusherService.createRepository(repository);
-		return Representation.<Repository> builder().item(Item.<Repository> builder().data(repository).build())
-				.links(this.repositoryLinkCreator.createLinks(repository.name)).build();
+		return Representation
+				.<Repository> builder()
+				.item(Item.<Repository> builder().data(repository).links(this.repositoryLinkCreator.createLinks(repository.name))
+						.build())
+				.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
+				.build();
 	}
 }

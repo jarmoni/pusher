@@ -6,48 +6,31 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.jarmoni.pusher.service.PusherServiceTest.createRepository;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
-import org.jarmoni.pusher.TstMain;
-import org.jarmoni.pusher.service.IPusherService;
 import org.jarmoni.resource.Repository;
 import org.jarmoni.restxe.common.Representation;
-import org.jarmoni.restxe.spring.RestTemplateFactory;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-public class RepositoryControllerIT {
-	private final RestTemplate restTemplate = RestTemplateFactory.createTemplate(Repository.class);
-	private ConfigurableApplicationContext context;
-	private IPusherService pusherService;
-
-	@Before
-	public void setUp() throws Exception {
-		this.context = SpringApplication.run(TstMain.class, new String[0]);
-		this.pusherService = (IPusherService) this.context.getBean("pusherService");
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		SpringApplication.exit(this.context, () -> 0);
-	}
+public class RepositoryControllerIT extends AbstractControllerIT {
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetRepository() throws Exception {
-		expect(this.pusherService.getRepository("myrepos")).andReturn(createRepository());
-		replay(this.pusherService);
-		final Representation<Repository> response = this.restTemplate.getForEntity(
-				new URI("http://localhost:9899/api/repository/get/myrepos"), Representation.class).getBody();
-		verify(this.pusherService);
+		expect(this.getPusherService().getRepository("myrepos")).andReturn(createRepository());
+		replay(this.getPusherService());
+		final Representation<Repository> response = this
+				.getRestTemplate()
+				.getForEntity(
+						new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_GET.replace("{name}", "myrepos")),
+						Representation.class).getBody();
+		verify(this.getPusherService());
 		assertEquals(1, response.getLinks().size());
 		assertEquals(1, response.getItems().size());
 		assertNotNull(response.getItems().get(0).getData());
@@ -64,25 +47,39 @@ public class RepositoryControllerIT {
 		final Repository reposReturn = createRepository();
 		reposReturn.autoCommit = !repos.autoCommit;
 
-		expect(this.pusherService.updateRepository(repos)).andReturn(reposReturn);
-		replay(this.pusherService);
-		final Representation<Repository> response = this.restTemplate.exchange(
-				new URI("http://localhost:9899/api/repository/update"), HttpMethod.PUT, new HttpEntity<Repository>(repos),
-				Representation.class).getBody();
-		verify(this.pusherService);
+		expect(this.getPusherService().updateRepository(repos)).andReturn(reposReturn);
+		replay(this.getPusherService());
+		final Representation<Repository> response = this
+				.getRestTemplate()
+				.exchange(new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_UPDATE), HttpMethod.PUT,
+						new HttpEntity<Repository>(repos), Representation.class).getBody();
+		verify(this.getPusherService());
 		assertEquals(1, response.getLinks().size());
 		assertEquals(1, response.getItems().size());
 		assertEquals(response.getItems().get(0).getData(), reposReturn);
+		assertFalse(response.getItems().get(0).getData().autoCommit);
 		assertEquals(3, response.getItems().get(0).getLinks().size());
 	}
 
 	@Test
 	public void testDeleteRepository() throws Exception {
-		this.pusherService.deleteRepository("myrepos");
+		this.getPusherService().deleteRepository("myrepos");
 		expectLastCall();
-		replay(this.pusherService);
-		this.restTemplate.delete(new URI("http://localhost:9899/api/repository/delete/myrepos"));
-		verify(this.pusherService);
+		replay(this.getPusherService());
+		this.getRestTemplate().delete(
+				new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_DELETE.replace("{name}", "myrepos")));
+		verify(this.getPusherService());
+	}
+
+	@Test
+	public void testTriggerRepository() throws Exception {
+		this.getPusherService().triggerRepository("myrepos");
+		expectLastCall();
+		replay(this.getPusherService());
+		final URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_TRIGGER)
+				.queryParam("name", "myrepos").build().toUri();
+		this.getRestTemplate().postForEntity(uri, "", Object.class);
+		verify(this.getPusherService());
 	}
 
 }
