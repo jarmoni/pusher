@@ -65,7 +65,7 @@ public class RepositoriesController {
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(repository).links(this.repositoryLinkCreator.createLinks(repository.name))
 						.build())
-						.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
-						.build();
+				.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
+				.build();
 	}
 }

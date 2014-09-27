@@ -86,13 +86,12 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testGetRepositoryExThrown() throws Exception {
-		expect(this.getPusherService().getRepository("myrepos")).andThrow(new RuntimeException("Something very bad has happened..."));
+		expect(this.getPusherService().getRepository("myrepos")).andThrow(
+				new RuntimeException("Something very bad has happened..."));
 		replay(this.getPusherService());
-		final ResponseEntity<Representation> response = this
-				.getRestTemplate()
-				.getForEntity(
-						new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_GET.replace("{name}", "myrepos")),
-						Representation.class);
+		final ResponseEntity<Representation> response = this.getRestTemplate().getForEntity(
+				new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_GET.replace("{name}", "myrepos")),
+				Representation.class);
 		verify(this.getPusherService());
 		assertFalse(response.getStatusCode().is2xxSuccessful());
 		assertEquals("Something very bad has happened...", response.getBody().getErrorMessage());
