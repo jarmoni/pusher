@@ -11,10 +11,12 @@ import org.jarmoni.restxe.common.LinkFactory;
 import org.jarmoni.restxe.common.LinkType;
 import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Lists;
@@ -56,13 +58,14 @@ public class RepositoriesController {
 
 	@RequestMapping(value = PATH_REPOSITORIES_CREATE, method = RequestMethod.POST)
 	@ResponseBody
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public Representation<Repository> createRepository(@RequestBody final Repository repository) {
 		this.pusherService.createRepository(repository);
 		return Representation
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(repository).links(this.repositoryLinkCreator.createLinks(repository.name))
 						.build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
-				.build();
+						.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
+						.build();
 	}
 }
