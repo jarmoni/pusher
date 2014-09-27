@@ -9,12 +9,14 @@ import org.jarmoni.restxe.common.LinkFactory;
 import org.jarmoni.restxe.common.LinkType;
 import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,11 +43,12 @@ public class RepositoryController {
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name))
 						.links(this.repositoryLinkCreator.createLinks(name)).build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF,
-						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
+						.link(this.linkFactory.createLink(LinkType.SELF_REF,
+								this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_DELETE, method = RequestMethod.DELETE)
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void deleteRepository(@PathVariable final String name) {
 		this.pusherService.deleteRepository(name);
 	}
@@ -58,14 +61,14 @@ public class RepositoryController {
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(updatedRepos)
 						.links(this.repositoryLinkCreator.createLinks(updatedRepos.name)).build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF,
-						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.name), HttpVerb.GET))
-				.build();
+						.link(this.linkFactory.createLink(LinkType.SELF_REF,
+								this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.name), HttpVerb.GET))
+								.build();
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.POST, params = "name")
-	public Object triggerRepository(@RequestParam final String name) {
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void triggerRepository(@RequestParam final String name) {
 		this.pusherService.triggerRepository(name);
-		return "";
 	}
 }
