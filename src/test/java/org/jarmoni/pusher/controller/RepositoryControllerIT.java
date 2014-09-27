@@ -16,6 +16,7 @@ import org.jarmoni.restxe.common.Representation;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class RepositoryControllerIT extends AbstractControllerIT {
@@ -80,6 +81,35 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 				.queryParam("name", "myrepos").build().toUri();
 		this.getRestTemplate().postForEntity(uri, "", Object.class);
 		verify(this.getPusherService());
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testGetRepositoryExThrown() throws Exception {
+		expect(this.getPusherService().getRepository("myrepos")).andThrow(new RuntimeException("Something very bad has happened..."));
+		replay(this.getPusherService());
+		final ResponseEntity<Representation> response = this
+				.getRestTemplate()
+				.getForEntity(
+						new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_GET.replace("{name}", "myrepos")),
+						Representation.class);
+		verify(this.getPusherService());
+		assertFalse(response.getStatusCode().is2xxSuccessful());
+		assertEquals("Something very bad has happened...", response.getBody().getErrorMessage());
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testTriggerRepositoryExThrown() throws Exception {
+		this.getPusherService().triggerRepository("myrepos");
+		expectLastCall().andThrow(new RuntimeException("Even worse..."));
+		replay(this.getPusherService());
+		final URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_TRIGGER)
+				.queryParam("name", "myrepos").build().toUri();
+		final ResponseEntity<Representation> response = this.getRestTemplate().postForEntity(uri, "", Representation.class);
+		verify(this.getPusherService());
+		assertFalse(response.getStatusCode().is2xxSuccessful());
+		assertEquals("Even worse...", response.getBody().getErrorMessage());
 	}
 
 }
