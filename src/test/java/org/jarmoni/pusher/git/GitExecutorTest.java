@@ -37,4 +37,9 @@ public class GitExecutorTest {
 		this.gitExecutor.createRepository(this.reposRoot);
 	}
 
+	@Test
+	public void testCreateRepositoryGit() throws Exception {
+		// TODO
+	}
+
 }
