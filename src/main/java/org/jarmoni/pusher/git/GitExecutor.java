@@ -4,8 +4,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Throwables;
 
 public class GitExecutor {
 
@@ -13,21 +16,21 @@ public class GitExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GitExecutor.class);
 
-	public void createRepository(final Path directory) {
+	public Repository createRepository(final Path directory) {
 		// does directory exist at all?
 		if (!Files.isDirectory(directory)) {
 			if (!directory.toFile().mkdirs()) {
 				throw new RuntimeException("Could not create directory=" + directory);
 			}
 			LOG.info("Will create GIT-repository in newly created directory");
-			this.createRepositoryInternal(directory);
+			return this.createRepositoryInternal(directory);
 		}
 		else {
 			final Path gitDir = directory.resolve(GIT_DIR_NAME);
 			// does the (existing) directory contain a '.git'-dir?
 			if (!Files.isDirectory(gitDir)) {
 				LOG.info("Will create GIT-repository in existing directory");
-				this.createRepositoryInternal(directory);
+				return this.createRepositoryInternal(directory);
 			}
 			else {
 				throw new RuntimeException("Directory already contains a '.git'-folder");
@@ -36,7 +39,15 @@ public class GitExecutor {
 	}
 
 	private Repository createRepositoryInternal(final Path directory) {
-		return null;
+		try {
+			final Repository repos = FileRepositoryBuilder.create(directory.resolve(".git").toFile());
+			repos.create();
+			repos.close();
+			return repos;
+		}
+		catch (final Throwable t) {
+			throw Throwables.propagate(t);
+		}
 
 	}
 }
