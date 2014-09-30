@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jarmoni.resource.Repository;
@@ -74,8 +75,8 @@ public class PusherService implements IPusherService {
 
 	@Override
 	public Repository getRepository(final String name) {
-		return this.repositories.stream().filter(rep -> name.equals(rep.name))
-				.findFirst().get();
+		return this.repositories.stream().filter(rep -> name.equals(rep.getName()))
+				.findFirst().orElseThrow(() -> new RuntimeException("Repository does not exist=" + name));
 	}
 
 	@Override
@@ -86,15 +87,16 @@ public class PusherService implements IPusherService {
 
 	@Override
 	public void deleteRepository(final String name) {
-		this.repositories.stream().filter(rep -> !rep.name.equals(name))
+		this.repositories = this.repositories.stream().filter(rep -> !rep.getName().equals(name))
 		.collect(Collectors.toList());
 	}
 
 	@Override
 	public Repository updateRepository(final Repository repository) {
-		this.repositories.stream()
-		.filter(rep -> !rep.name.equals(repository.name))
-		.collect(Collectors.toList()).add(repository);
+		this.repositories = this.repositories.stream()
+		.filter(rep -> !rep.getName().equals(repository.getName()))
+		.collect(Collectors.toList());
+		this.repositories.add(repository);
 		return repository;
 	}
 

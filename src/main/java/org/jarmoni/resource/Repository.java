@@ -2,16 +2,96 @@ package org.jarmoni.resource;
 
 public class Repository {
 
-	public String name;
-	public String path;
-	public boolean autoCommit;
-	public boolean autoPush;
-	public boolean autoPull;
+	/**
+	 * Required. Unique name
+	 */
+	private String name;
+	/**
+	 * Required. Path to local (non-bare) repository
+	 */
+	private String path;
+	/**
+	 * Optional. If 'true' pusher will check the repository for changes
+	 * frequently and and commits (pushes) changes automatically. Alternatively
+	 * commits can be triggered manually.
+	 */
+	private boolean autoCommit = false;
+
+	/**
+	 * Optional. Indicates if pusher should pull from origin/master frequently
+	 */
+	private boolean autoPull = false;
+	/**
+	 * Optional. Indicates if pusher should push all changes to origin/master
+	 */
+	private boolean autoPush = false;
+
+	public String getName() {
+		return name;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public boolean isAutoCommit() {
+		return autoCommit;
+	}
+
+	public boolean isAutoPull() {
+		return autoPull;
+	}
+
+	public boolean isAutoPush() {
+		return autoPush;
+	}
 
 	@Override
 	public String toString() {
 		return "Repository [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoPush=" + autoPush
 				+ ", autoPull=" + autoPull + "]";
+	}
+
+	public static RepositoryBuilder builder() {
+		return new RepositoryBuilder();
+	}
+
+	public static final class RepositoryBuilder {
+
+		private final Repository repository;
+
+		private RepositoryBuilder() {
+			this.repository = new Repository();
+		}
+
+		public Repository build() {
+			return this.repository;
+		}
+
+		public RepositoryBuilder name(final String name) {
+			this.repository.name = name;
+			return this;
+		}
+
+		public RepositoryBuilder path(String path) {
+			this.repository.path = path;
+			return this;
+		}
+
+		public RepositoryBuilder autoCommit(final boolean autoCommit) {
+			this.repository.autoCommit = autoCommit;
+			return this;
+		}
+
+		public RepositoryBuilder autoPull(final boolean autoPull) {
+			this.repository.autoPull = autoPull;
+			return this;
+		}
+
+		public RepositoryBuilder autoPush(final boolean autoPush) {
+			this.repository.autoPush = autoPush;
+			return this;
+		}
 	}
 
 	@Override

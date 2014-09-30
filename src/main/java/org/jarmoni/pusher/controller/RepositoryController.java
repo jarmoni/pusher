@@ -60,9 +60,9 @@ public class RepositoryController {
 		return Representation
 				.<Repository> builder()
 				.item(Item.<Repository> builder().data(updatedRepos)
-						.links(this.repositoryLinkCreator.createLinks(updatedRepos.name)).build())
+						.links(this.repositoryLinkCreator.createLinks(updatedRepos.getName())).build())
 				.link(this.linkFactory.createLink(LinkType.SELF_REF,
-						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.name), HttpVerb.GET))
+						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.getName()), HttpVerb.GET))
 				.build();
 	}
 

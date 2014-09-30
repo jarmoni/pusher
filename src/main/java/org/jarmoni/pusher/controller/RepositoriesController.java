@@ -47,7 +47,7 @@ public class RepositoriesController {
 								.<Repository> builder()
 								.data(rep)
 								.links(this.repositoryLinkCreator
-										.createLinks(rep.name)).build())
+										.createLinks(rep.getName())).build())
 										.collect(Collectors.toList()))
 										.links(Lists.newArrayList(this.linkFactory
 												.createLink(LinkType.SELF_REF, PATH_REPOSITORIES_LIST,
@@ -63,8 +63,8 @@ public class RepositoriesController {
 		this.pusherService.createRepository(repository);
 		return Representation
 				.<Repository> builder()
-				.item(Item.<Repository> builder().data(repository).links(this.repositoryLinkCreator.createLinks(repository.name))
-						.build())
+				.item(Item.<Repository> builder().data(repository)
+						.links(this.repositoryLinkCreator.createLinks(repository.getName())).build())
 				.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
 				.build();
 	}

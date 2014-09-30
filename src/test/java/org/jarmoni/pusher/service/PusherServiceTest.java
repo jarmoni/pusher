@@ -3,7 +3,9 @@ package org.jarmoni.pusher.service;
 import static org.jarmoni.pusher.service.PusherService.REPOS_FILE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
@@ -13,6 +15,7 @@ import org.jarmoni.resource.Repository;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 public class PusherServiceTest {
@@ -20,6 +23,8 @@ public class PusherServiceTest {
 	// CHECKSTYLE:OFF
 	@Rule
 	public TemporaryFolder tf = new TemporaryFolder();
+	@Rule
+	public ExpectedException ee = ExpectedException.none();
 	// CHECKSTYLE:ON
 
 	private Path appHome;
@@ -69,11 +74,22 @@ public class PusherServiceTest {
 	@Test
 	public void testUpdateRepository() throws Exception {
 		this.pusherService.createRepository(createRepository());
-		final Repository repos = this.pusherService.getRepository("myrepos");
-		assertNotSame("/one/two/three", repos.path);
-		repos.path = "/one/two/three";
+		Repository repos = this.pusherService.getRepository("myrepos");
+		assertNotSame("/one/two/three", repos.getPath());
+		repos = Repository.builder().name(repos.getName()).path("/one/two/three").build();
+		System.out.println(repos);
 		this.pusherService.updateRepository(repos);
-		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").path);
+		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").getPath());
+	}
+
+	@Test
+	public void testDeleteRepository() throws Exception {
+		this.pusherService.createRepository(createRepository());
+		assertNotNull(this.pusherService.getRepository("myrepos"));
+		this.pusherService.deleteRepository("myrepos");
+		this.ee.expect(RuntimeException.class);
+		this.ee.expectMessage("Repository does not exist");
+		assertNull(this.pusherService.getRepository("myrepos"));
 	}
 
 	@Test
@@ -94,11 +110,6 @@ public class PusherServiceTest {
 	}
 
 	public static Repository createRepository() {
-		final Repository r1 = new Repository();
-		r1.autoCommit = true;
-		r1.autoPush = false;
-		r1.name = "myrepos";
-		r1.path = "/home/johndoe/myrepos";
-		return r1;
+		return Repository.builder().autoCommit(true).autoPush(false).name("myrepos").path("/home/johndoe/myrepos").build();
 	}
 }

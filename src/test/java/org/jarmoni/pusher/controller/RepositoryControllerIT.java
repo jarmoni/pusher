@@ -45,8 +45,8 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 		// if no timeout is set. Check this....
 		Thread.sleep(5000L);
 		final Repository repos = createRepository();
-		final Repository reposReturn = createRepository();
-		reposReturn.autoCommit = !repos.autoCommit;
+		final Repository reposReturn = Repository.builder().name(repos.getName()).path(repos.getPath())
+				.autoCommit(!repos.isAutoCommit()).build();
 
 		expect(this.getPusherService().updateRepository(repos)).andReturn(reposReturn);
 		replay(this.getPusherService());
@@ -58,7 +58,7 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 		assertEquals(1, response.getLinks().size());
 		assertEquals(1, response.getItems().size());
 		assertEquals(response.getItems().get(0).getData(), reposReturn);
-		assertFalse(response.getItems().get(0).getData().autoCommit);
+		assertFalse(response.getItems().get(0).getData().isAutoCommit());
 		assertEquals(3, response.getItems().get(0).getLinks().size());
 	}
 
