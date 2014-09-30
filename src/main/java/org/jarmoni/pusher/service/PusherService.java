@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
@@ -23,7 +23,7 @@ public class PusherService implements IPusherService {
 	private Path appHome;
 	private final Path reposFile;
 
-	private List<Repository> repositories = Lists.newArrayList();
+	private List<RepositoryResource> repositories = Lists.newArrayList();
 
 	public PusherService(final String appHome) {
 		final Path path = Paths.get(Preconditions.checkNotNull(appHome));
@@ -69,18 +69,18 @@ public class PusherService implements IPusherService {
 	}
 
 	@Override
-	public List<Repository> getRepositories() {
+	public List<RepositoryResource> getRepositories() {
 		return this.repositories;
 	}
 
 	@Override
-	public Repository getRepository(final String name) {
+	public RepositoryResource getRepository(final String name) {
 		return this.repositories.stream().filter(rep -> name.equals(rep.getName()))
 				.findFirst().orElseThrow(() -> new RuntimeException("Repository does not exist=" + name));
 	}
 
 	@Override
-	public Repository createRepository(final Repository repository) {
+	public RepositoryResource createRepository(final RepositoryResource repository) {
 		this.repositories.add(repository);
 		return repository;
 	}
@@ -92,7 +92,7 @@ public class PusherService implements IPusherService {
 	}
 
 	@Override
-	public Repository updateRepository(final Repository repository) {
+	public RepositoryResource updateRepository(final RepositoryResource repository) {
 		this.repositories = this.repositories.stream()
 		.filter(rep -> !rep.getName().equals(repository.getName()))
 		.collect(Collectors.toList());

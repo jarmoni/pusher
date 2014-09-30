@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,9 +74,9 @@ public class PusherServiceTest {
 	@Test
 	public void testUpdateRepository() throws Exception {
 		this.pusherService.createRepository(createRepository());
-		Repository repos = this.pusherService.getRepository("myrepos");
+		RepositoryResource repos = this.pusherService.getRepository("myrepos");
 		assertNotSame("/one/two/three", repos.getPath());
-		repos = Repository.builder().name(repos.getName()).path("/one/two/three").build();
+		repos = RepositoryResource.builder().name(repos.getName()).path("/one/two/three").build();
 		System.out.println(repos);
 		this.pusherService.updateRepository(repos);
 		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").getPath());
@@ -109,7 +109,8 @@ public class PusherServiceTest {
 		assertFalse(Files.size(this.reposFile) == 0L);
 	}
 
-	public static Repository createRepository() {
-		return Repository.builder().autoCommit(true).autoPush(false).name("myrepos").path("/home/johndoe/myrepos").build();
+	public static RepositoryResource createRepository() {
+		return RepositoryResource.builder().autoCommit(true).autoPush(false).name("myrepos").path("/home/johndoe/myrepos")
+				.build();
 	}
 }

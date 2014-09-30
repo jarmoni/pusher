@@ -9,7 +9,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.common.Representation;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class RepositoriesControllerIT extends AbstractControllerIT {
 	public void testListRepositories() throws Exception {
 		expect(this.getPusherService().getRepositories()).andReturn(Lists.newArrayList(createRepository()));
 		replay(this.getPusherService());
-		final Representation<Repository> response = this
+		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
 				.getForEntity(new URI("http://localhost:9899" + RepositoriesController.PATH_REPOSITORIES_LIST),
 						Representation.class).getBody();
@@ -36,10 +36,10 @@ public class RepositoriesControllerIT extends AbstractControllerIT {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateRepository() throws Exception {
-		final Repository repos = createRepository();
+		final RepositoryResource repos = createRepository();
 		expect(this.getPusherService().createRepository(repos)).andReturn(repos);
 		replay(this.getPusherService());
-		final Representation<Repository> response = this
+		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
 				.postForEntity(new URI("http://localhost:9899" + RepositoriesController.PATH_REPOSITORIES_CREATE), repos,
 						Representation.class).getBody();

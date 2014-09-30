@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.common.Representation;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
@@ -26,7 +26,7 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 	public void testGetRepository() throws Exception {
 		expect(this.getPusherService().getRepository("myrepos")).andReturn(createRepository());
 		replay(this.getPusherService());
-		final Representation<Repository> response = this
+		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
 				.getForEntity(
 						new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_GET.replace("{name}", "myrepos")),
@@ -44,16 +44,16 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 		// TODO: Strange beheaviour. Refresh of ApplicationContext seems to fail
 		// if no timeout is set. Check this....
 		Thread.sleep(5000L);
-		final Repository repos = createRepository();
-		final Repository reposReturn = Repository.builder().name(repos.getName()).path(repos.getPath())
+		final RepositoryResource repos = createRepository();
+		final RepositoryResource reposReturn = RepositoryResource.builder().name(repos.getName()).path(repos.getPath())
 				.autoCommit(!repos.isAutoCommit()).build();
 
 		expect(this.getPusherService().updateRepository(repos)).andReturn(reposReturn);
 		replay(this.getPusherService());
-		final Representation<Repository> response = this
+		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
 				.exchange(new URI("http://localhost:9899" + RepositoryController.PATH_REPOSITORY_UPDATE), HttpMethod.PUT,
-						new HttpEntity<Repository>(repos), Representation.class).getBody();
+						new HttpEntity<RepositoryResource>(repos), Representation.class).getBody();
 		verify(this.getPusherService());
 		assertEquals(1, response.getLinks().size());
 		assertEquals(1, response.getItems().size());

@@ -1,6 +1,6 @@
 package org.jarmoni.resource;
 
-public class Repository {
+public class RepositoryResource {
 
 	/**
 	 * Required. Unique name
@@ -52,43 +52,43 @@ public class Repository {
 				+ ", autoPull=" + autoPull + "]";
 	}
 
-	public static RepositoryBuilder builder() {
-		return new RepositoryBuilder();
+	public static RepositoryResourceBuilder builder() {
+		return new RepositoryResourceBuilder();
 	}
 
-	public static final class RepositoryBuilder {
+	public static final class RepositoryResourceBuilder {
 
-		private final Repository repository;
+		private final RepositoryResource repository;
 
-		private RepositoryBuilder() {
-			this.repository = new Repository();
+		private RepositoryResourceBuilder() {
+			this.repository = new RepositoryResource();
 		}
 
-		public Repository build() {
+		public RepositoryResource build() {
 			return this.repository;
 		}
 
-		public RepositoryBuilder name(final String name) {
+		public RepositoryResourceBuilder name(final String name) {
 			this.repository.name = name;
 			return this;
 		}
 
-		public RepositoryBuilder path(String path) {
+		public RepositoryResourceBuilder path(String path) {
 			this.repository.path = path;
 			return this;
 		}
 
-		public RepositoryBuilder autoCommit(final boolean autoCommit) {
+		public RepositoryResourceBuilder autoCommit(final boolean autoCommit) {
 			this.repository.autoCommit = autoCommit;
 			return this;
 		}
 
-		public RepositoryBuilder autoPull(final boolean autoPull) {
+		public RepositoryResourceBuilder autoPull(final boolean autoPull) {
 			this.repository.autoPull = autoPull;
 			return this;
 		}
 
-		public RepositoryBuilder autoPush(final boolean autoPush) {
+		public RepositoryResourceBuilder autoPush(final boolean autoPush) {
 			this.repository.autoPush = autoPush;
 			return this;
 		}
@@ -117,7 +117,7 @@ public class Repository {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final Repository other = (Repository) obj;
+		final RepositoryResource other = (RepositoryResource) obj;
 		if (autoCommit != other.autoCommit) {
 			return false;
 		}

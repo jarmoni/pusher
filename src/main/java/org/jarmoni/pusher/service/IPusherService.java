@@ -2,19 +2,19 @@ package org.jarmoni.pusher.service;
 
 import java.util.List;
 
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 
 public interface IPusherService {
 
-	List<Repository> getRepositories();
+	List<RepositoryResource> getRepositories();
 
-	Repository getRepository(final String name);
+	RepositoryResource getRepository(final String name);
 
-	Repository createRepository(Repository repository);
+	RepositoryResource createRepository(RepositoryResource repository);
 
 	void deleteRepository(final String name);
 
-	Repository updateRepository(final Repository repository);
+	RepositoryResource updateRepository(final RepositoryResource repository);
 
 	void triggerRepository(String name);
 }

@@ -4,7 +4,7 @@ import java.util.stream.Collectors;
 
 import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.LinkFactory;
@@ -37,14 +37,14 @@ public class RepositoriesController {
 
 	@RequestMapping(value = PATH_REPOSITORIES_LIST, method = RequestMethod.GET)
 	@ResponseBody
-	public Representation<Repository> listRepositories() {
+	public Representation<RepositoryResource> listRepositories() {
 		return Representation
-				.<Repository> builder()
+				.<RepositoryResource> builder()
 				.items(this.pusherService
 						.getRepositories()
 						.stream()
 						.map(rep -> Item
-								.<Repository> builder()
+								.<RepositoryResource> builder()
 								.data(rep)
 								.links(this.repositoryLinkCreator
 										.createLinks(rep.getName())).build())
@@ -59,11 +59,11 @@ public class RepositoriesController {
 	@RequestMapping(value = PATH_REPOSITORIES_CREATE, method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public Representation<Repository> createRepository(@RequestBody final Repository repository) {
+	public Representation<RepositoryResource> createRepository(@RequestBody final RepositoryResource repository) {
 		this.pusherService.createRepository(repository);
 		return Representation
-				.<Repository> builder()
-				.item(Item.<Repository> builder().data(repository)
+				.<RepositoryResource> builder()
+				.item(Item.<RepositoryResource> builder().data(repository)
 						.links(this.repositoryLinkCreator.createLinks(repository.getName())).build())
 				.link(this.linkFactory.createLink(LinkType.SELF_REF, RepositoryController.PATH_REPOSITORY_GET, HttpVerb.GET))
 				.build();

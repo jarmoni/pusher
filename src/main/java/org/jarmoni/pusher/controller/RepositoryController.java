@@ -2,7 +2,7 @@ package org.jarmoni.pusher.controller;
 
 import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.resource.Repository;
+import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.LinkFactory;
@@ -37,11 +37,11 @@ public class RepositoryController {
 
 	@RequestMapping(value = PATH_REPOSITORY_GET, method = RequestMethod.GET)
 	@ResponseBody
-	public Representation<Repository> getRepository(@PathVariable final String name) {
+	public Representation<RepositoryResource> getRepository(@PathVariable final String name) {
 
 		return Representation
-				.<Repository> builder()
-				.item(Item.<Repository> builder().data(this.pusherService.getRepository(name))
+				.<RepositoryResource> builder()
+				.item(Item.<RepositoryResource> builder().data(this.pusherService.getRepository(name))
 						.links(this.repositoryLinkCreator.createLinks(name)).build())
 				.link(this.linkFactory.createLink(LinkType.SELF_REF,
 						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
@@ -55,11 +55,11 @@ public class RepositoryController {
 
 	@RequestMapping(value = PATH_REPOSITORY_UPDATE, method = RequestMethod.PUT)
 	@ResponseBody
-	public Representation<Repository> updateRepository(@RequestBody final Repository repository) {
-		final Repository updatedRepos = this.pusherService.updateRepository(repository);
+	public Representation<RepositoryResource> updateRepository(@RequestBody final RepositoryResource repository) {
+		final RepositoryResource updatedRepos = this.pusherService.updateRepository(repository);
 		return Representation
-				.<Repository> builder()
-				.item(Item.<Repository> builder().data(updatedRepos)
+				.<RepositoryResource> builder()
+				.item(Item.<RepositoryResource> builder().data(updatedRepos)
 						.links(this.repositoryLinkCreator.createLinks(updatedRepos.getName())).build())
 				.link(this.linkFactory.createLink(LinkType.SELF_REF,
 						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.getName()), HttpVerb.GET))
