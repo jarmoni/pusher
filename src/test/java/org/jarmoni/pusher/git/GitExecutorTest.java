@@ -7,10 +7,16 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.jarmoni.resource.RepositoryResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -111,7 +117,7 @@ public class GitExecutorTest {
 
 		Files.write(testFile, "xyz".getBytes());
 		Status status5 = git.status().call();
-		System.out.println(testFile);
+		// System.out.println(testFile);
 		assertEquals(0, status5.getUntracked().size());
 		assertEquals(0, status5.getAdded().size());
 		assertEquals(0, status5.getChanged().size());
@@ -123,7 +129,7 @@ public class GitExecutorTest {
 
 		Files.delete(testFile);
 		Status status6 = git.status().call();
-		System.out.println(testFile);
+		// System.out.println(testFile);
 		assertEquals(0, status6.getUntracked().size());
 		assertEquals(0, status6.getAdded().size());
 		assertEquals(0, status6.getChanged().size());
@@ -135,7 +141,7 @@ public class GitExecutorTest {
 
 		git.add().setUpdate(true).addFilepattern(".").call();
 		Status status7 = git.status().call();
-		System.out.println(testFile);
+		// System.out.println(testFile);
 		assertEquals(0, status7.getUntracked().size());
 		assertEquals(0, status7.getAdded().size());
 		assertEquals(0, status7.getChanged().size());
@@ -144,5 +150,78 @@ public class GitExecutorTest {
 		assertEquals(0, status7.getMissing().size());
 		assertEquals(0, status7.getModified().size());
 		assertEquals(1, status7.getRemoved().size());
+	}
+
+	@Test
+	public void testCommitChanges() throws Exception {
+		// Create bare repos
+		final Repository bareRepos = FileRepositoryBuilder.create(this.reposRoot.resolve(".git").toFile());
+		bareRepos.create(true);
+		Path clonePath = Paths.get(this.tf.newFolder("root").toURI());
+		Git git = Git.cloneRepository().setURI(this.reposRoot.toString()).setDirectory(clonePath.toFile()).call();
+		Repository clone = git.getRepository();
+		git.commit().setCommitter("666", "666@777.com").setMessage("initial").call();
+		git.push().setRemote("origin").setPushAll().call();
+		bareRepos.close();
+
+		// System.out.println(clonePath.toString());
+
+		Path path1 = clonePath.resolve("file1");
+		Files.createFile(path1);
+		git.add().addFilepattern(".").call();
+		git.commit().setCommitter("john doe", "john@doe.com").setMessage("some message").call();
+		Files.write(path1, "abc".getBytes());
+
+		Path path2 = clonePath.resolve("file2");
+		Files.createFile(path2);
+		git.add().addFilepattern("file2").call();
+		git.commit().setCommitter("john doe", "john@doe.com").setMessage("another message").call();
+		Files.delete(path2);
+
+		Files.createFile(clonePath.resolve("file3"));
+		git.add().addFilepattern("file3").call();
+
+		Files.createFile(clonePath.resolve("file4"));
+
+		Status status = git.status().call();
+		assertEquals(1, status.getUntracked().size());
+		assertEquals(1, status.getAdded().size());
+		assertEquals(0, status.getChanged().size());
+		assertEquals(0, status.getConflicting().size());
+		assertEquals(3, status.getUncommittedChanges().size());
+		assertEquals(1, status.getMissing().size());
+		assertEquals(1, status.getModified().size());
+		assertEquals(0, status.getRemoved().size());
+
+		RepositoryResource reposResource = RepositoryResource.builder().name("myrepos").autoPush(true).userName("xyz")
+				.userEmail("xyz@abc.at").commitMsg("my msg").build();
+		this.gitExecutor.commitChanges(clone, reposResource);
+
+		Status status2 = git.status().call();
+		assertEquals(0, status2.getUntracked().size());
+		assertEquals(0, status2.getAdded().size());
+		assertEquals(0, status2.getChanged().size());
+		assertEquals(0, status2.getConflicting().size());
+		assertEquals(0, status2.getUncommittedChanges().size());
+		assertEquals(0, status2.getMissing().size());
+		assertEquals(0, status2.getModified().size());
+		assertEquals(0, status2.getRemoved().size());
+
+		Iterable<RevCommit> logs = git.log().setMaxCount(1).call();
+		RevCommit commit = logs.iterator().next();
+		assertEquals("xyz", commit.getAuthorIdent().getName());
+		assertEquals("xyz@abc.at", commit.getAuthorIdent().getEmailAddress());
+		assertEquals("my msg", commit.getFullMessage());
+		String commitChecksum = commit.getName();
+		// System.out.println(commit.getName());
+		Map<String, Ref> refs = clone.getAllRefs();
+		boolean originMasterPresent = false;
+		for (Entry<String, Ref> entry : refs.entrySet()) {
+			if (entry.getKey().contains("origin/master")) {
+				originMasterPresent = true;
+			}
+			assertTrue(entry.getValue().toString().contains(commitChecksum));
+		}
+		assertTrue(originMasterPresent);
 	}
 }
