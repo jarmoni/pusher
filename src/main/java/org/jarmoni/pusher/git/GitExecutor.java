@@ -9,6 +9,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.jarmoni.resource.RepositoryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +54,24 @@ public class GitExecutor {
 			throw Throwables.propagate(t);
 		}
 	}
-	
-	public void commitChanges(Repository repos) {
+
+	public void commitChanges(Repository repos, RepositoryResource reposResource) {
 		Git git = new Git(repos);
 		try {
 			Status status = git.status().call();
-		} catch (Throwable t) {
+			if (!status.getConflicting().isEmpty()) {
+				throw new IllegalStateException("Repository contains conflicted files. Repos=" + repos);
+			}
+			git.add().addFilepattern(".").call();
+			git.add().setUpdate(true).addFilepattern(".").call();
+			git.commit().setCommitter(reposResource.getUserName(), reposResource.getUserEmail())
+					.setMessage(reposResource.getCommitMsg()).call();
+			if (reposResource.isAutoPush()) {
+				git.pull().setRemote("origin").setRemoteBranchName("master").call();
+				git.push().setRemote("origin").setPushAll().call();
+			}
+		}
+		catch (Throwable t) {
 			throw Throwables.propagate(t);
 		}
 	}
