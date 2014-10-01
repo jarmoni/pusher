@@ -26,6 +26,10 @@ public class RepositoryResource {
 	 */
 	private boolean autoPush = false;
 
+	private String userName;
+	private String userEmail;
+	private String commitMsg;
+
 	public String getName() {
 		return name;
 	}
@@ -46,10 +50,87 @@ public class RepositoryResource {
 		return autoPush;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public String getCommitMsg() {
+		return commitMsg;
+	}
+	
+	
+
 	@Override
 	public String toString() {
-		return "Repository [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoPush=" + autoPush
-				+ ", autoPull=" + autoPull + "]";
+		return "RepositoryResource [name=" + name + ", path=" + path
+				+ ", autoCommit=" + autoCommit + ", autoPull=" + autoPull
+				+ ", autoPush=" + autoPush + ", userName=" + userName
+				+ ", userEmail=" + userEmail + ", commitMsg=" + commitMsg + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (autoCommit ? 1231 : 1237);
+		result = prime * result + (autoPull ? 1231 : 1237);
+		result = prime * result + (autoPush ? 1231 : 1237);
+		result = prime * result
+				+ ((commitMsg == null) ? 0 : commitMsg.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result
+				+ ((userEmail == null) ? 0 : userEmail.hashCode());
+		result = prime * result
+				+ ((userName == null) ? 0 : userName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RepositoryResource other = (RepositoryResource) obj;
+		if (autoCommit != other.autoCommit)
+			return false;
+		if (autoPull != other.autoPull)
+			return false;
+		if (autoPush != other.autoPush)
+			return false;
+		if (commitMsg == null) {
+			if (other.commitMsg != null)
+				return false;
+		} else if (!commitMsg.equals(other.commitMsg))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		if (userEmail == null) {
+			if (other.userEmail != null)
+				return false;
+		} else if (!userEmail.equals(other.userEmail))
+			return false;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
 	}
 
 	public static RepositoryResourceBuilder builder() {
@@ -92,57 +173,20 @@ public class RepositoryResource {
 			this.repository.autoPush = autoPush;
 			return this;
 		}
-	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (autoCommit ? 1231 : 1237);
-		result = prime * result + (autoPull ? 1231 : 1237);
-		result = prime * result + (autoPush ? 1231 : 1237);
-		result = prime * result + (name == null ? 0 : name.hashCode());
-		result = prime * result + (path == null ? 0 : path.hashCode());
-		return result;
-	}
+		public RepositoryResourceBuilder userName(final String userName) {
+			this.repository.userName = userName;
+			return this;
+		}
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
+		public RepositoryResourceBuilder userEmail(final String userEmail) {
+			this.repository.userEmail = userEmail;
+			return this;
 		}
-		if (obj == null) {
-			return false;
+
+		public RepositoryResourceBuilder commitMsg(final String commitMsg) {
+			this.repository.commitMsg = commitMsg;
+			return this;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final RepositoryResource other = (RepositoryResource) obj;
-		if (autoCommit != other.autoCommit) {
-			return false;
-		}
-		if (autoPull != other.autoPull) {
-			return false;
-		}
-		if (autoPush != other.autoPush) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		}
-		else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (path == null) {
-			if (other.path != null) {
-				return false;
-			}
-		}
-		else if (!path.equals(other.path)) {
-			return false;
-		}
-		return true;
 	}
 }
