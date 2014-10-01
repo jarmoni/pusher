@@ -3,6 +3,10 @@ package org.jarmoni.pusher.git;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
@@ -48,6 +52,14 @@ public class GitExecutor {
 		catch (final Throwable t) {
 			throw Throwables.propagate(t);
 		}
-
+	}
+	
+	public void commitChanges(Repository repos) {
+		Git git = new Git(repos);
+		try {
+			Status status = git.status().call();
+		} catch (Throwable t) {
+			throw Throwables.propagate(t);
+		}
 	}
 }
