@@ -1,5 +1,8 @@
 package org.jarmoni.pusher.git;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,8 +41,10 @@ public class GitExecutorTest {
 	}
 
 	@Test
-	public void testCreateRepositoryGit() throws Exception {
-		// TODO
+	public void testCreateRepositoryReposFolderAlreadyPresent() throws Exception {
+		assertFalse(Files.isDirectory(this.reposRoot.resolve(".git")));
+		this.gitExecutor.createRepository(this.reposRoot);
+		assertTrue(Files.isDirectory(this.reposRoot.resolve(".git")));
 	}
 
 }
