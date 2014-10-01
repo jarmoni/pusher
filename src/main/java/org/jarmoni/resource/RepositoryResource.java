@@ -61,15 +61,12 @@ public class RepositoryResource {
 	public String getCommitMsg() {
 		return commitMsg;
 	}
-	
-	
 
 	@Override
 	public String toString() {
-		return "RepositoryResource [name=" + name + ", path=" + path
-				+ ", autoCommit=" + autoCommit + ", autoPull=" + autoPull
-				+ ", autoPush=" + autoPush + ", userName=" + userName
-				+ ", userEmail=" + userEmail + ", commitMsg=" + commitMsg + "]";
+		return "RepositoryResource [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoPull=" + autoPull
+				+ ", autoPush=" + autoPush + ", userName=" + userName + ", userEmail=" + userEmail + ", commitMsg=" + commitMsg
+				+ "]";
 	}
 
 	@Override
@@ -79,14 +76,11 @@ public class RepositoryResource {
 		result = prime * result + (autoCommit ? 1231 : 1237);
 		result = prime * result + (autoPull ? 1231 : 1237);
 		result = prime * result + (autoPush ? 1231 : 1237);
-		result = prime * result
-				+ ((commitMsg == null) ? 0 : commitMsg.hashCode());
+		result = prime * result + ((commitMsg == null) ? 0 : commitMsg.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result
-				+ ((userEmail == null) ? 0 : userEmail.hashCode());
-		result = prime * result
-				+ ((userName == null) ? 0 : userName.hashCode());
+		result = prime * result + ((userEmail == null) ? 0 : userEmail.hashCode());
+		result = prime * result + ((userName == null) ? 0 : userName.hashCode());
 		return result;
 	}
 
@@ -108,27 +102,32 @@ public class RepositoryResource {
 		if (commitMsg == null) {
 			if (other.commitMsg != null)
 				return false;
-		} else if (!commitMsg.equals(other.commitMsg))
+		}
+		else if (!commitMsg.equals(other.commitMsg))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		}
+		else if (!name.equals(other.name))
 			return false;
 		if (path == null) {
 			if (other.path != null)
 				return false;
-		} else if (!path.equals(other.path))
+		}
+		else if (!path.equals(other.path))
 			return false;
 		if (userEmail == null) {
 			if (other.userEmail != null)
 				return false;
-		} else if (!userEmail.equals(other.userEmail))
+		}
+		else if (!userEmail.equals(other.userEmail))
 			return false;
 		if (userName == null) {
 			if (other.userName != null)
 				return false;
-		} else if (!userName.equals(other.userName))
+		}
+		else if (!userName.equals(other.userName))
 			return false;
 		return true;
 	}
