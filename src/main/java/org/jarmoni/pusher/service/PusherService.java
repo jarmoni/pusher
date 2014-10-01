@@ -6,15 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jgit.lib.Repository;
 import org.jarmoni.resource.RepositoryResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class PusherService implements IPusherService {
 
@@ -23,6 +26,7 @@ public class PusherService implements IPusherService {
 	private Path appHome;
 	private final Path reposFile;
 
+	private Map<String, Pair<Repository, RepositoryResource>> repositories2 = Maps.newHashMap();
 	private List<RepositoryResource> repositories = Lists.newArrayList();
 
 	public PusherService(final String appHome) {

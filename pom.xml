@@ -32,6 +32,7 @@
 		<guava.version>18.0</guava.version>
 		<jgit.version>3.5.0.201409071800-rc1</jgit.version>
 		<easymock.version>3.2</easymock.version>
+		<commons.lang3.version>3.3.2</commons.lang3.version>
 	</properties>
 
 	<build>
@@ -88,6 +89,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons.lang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
