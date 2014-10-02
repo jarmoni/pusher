@@ -5,8 +5,6 @@ import java.nio.file.Path;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.errors.NoWorkTreeException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.jarmoni.resource.RepositoryResource;
@@ -21,21 +19,21 @@ public class GitExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GitExecutor.class);
 
-	public Repository createRepository(final Path directory) {
+	public Repository openAndCreateRepository(final Path directory) {
 		// does directory exist at all?
 		if (!Files.isDirectory(directory)) {
 			if (!directory.toFile().mkdirs()) {
 				throw new RuntimeException("Could not create directory=" + directory);
 			}
 			LOG.info("Will create GIT-repository in newly created directory");
-			return this.createRepositoryInternal(directory);
+			return this.createRepository(directory);
 		}
 		else {
 			final Path gitDir = directory.resolve(GIT_DIR_NAME);
 			// does the (existing) directory contain a '.git'-dir?
 			if (!Files.isDirectory(gitDir)) {
 				LOG.info("Will create GIT-repository in existing directory");
-				return this.createRepositoryInternal(directory);
+				return this.createRepository(directory);
 			}
 			else {
 				throw new RuntimeException("Directory already contains a '" + GIT_DIR_NAME + "'-folder");
@@ -43,9 +41,18 @@ public class GitExecutor {
 		}
 	}
 
-	private Repository createRepositoryInternal(final Path directory) {
+	public Repository openRepository(final Path directory) {
 		try {
-			final Repository repos = FileRepositoryBuilder.create(directory.resolve(GIT_DIR_NAME).toFile());
+			return FileRepositoryBuilder.create(directory.resolve(GIT_DIR_NAME).toFile());
+		}
+		catch (final Throwable t) {
+			throw Throwables.propagate(t);
+		}
+	}
+
+	public Repository createRepository(final Path directory) {
+		try {
+			final Repository repos = this.openRepository(directory);
 			repos.create();
 			repos.close();
 			return repos;
