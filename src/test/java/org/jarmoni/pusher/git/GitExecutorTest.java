@@ -43,33 +43,33 @@ public class GitExecutorTest {
 	}
 
 	@Test
-	public void testCreateRepositoryGitFolderAlreadyPresent() throws Exception {
+	public void testOpenAndCreateRepositoryGitFolderAlreadyPresent() throws Exception {
 		this.ee.expect(RuntimeException.class);
 		this.ee.expectMessage("Directory already contains a '" + GIT_DIR_NAME + "'-folder");
 		final Path gitDir = this.reposRoot.resolve(GIT_DIR_NAME);
 		Files.createDirectory(gitDir);
-		this.gitExecutor.createRepository(this.reposRoot);
+		this.gitExecutor.openAndCreateRepository(this.reposRoot);
 	}
 
 	@Test
-	public void testCreateRepositoryReposFolderAlreadyPresent() throws Exception {
+	public void testOpenAndCreateRepositoryReposFolderAlreadyPresent() throws Exception {
 		assertFalse(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
-		this.gitExecutor.createRepository(this.reposRoot);
+		this.gitExecutor.openAndCreateRepository(this.reposRoot);
 		assertTrue(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
 	}
 
 	@Test
-	public void testCreateRepositoryReposFolderNotPresent() throws Exception {
+	public void testOpenAndCreateRepositoryReposFolderNotPresent() throws Exception {
 		Files.deleteIfExists(this.reposRoot);
 		assertFalse(Files.isDirectory(this.reposRoot));
-		this.gitExecutor.createRepository(this.reposRoot);
+		this.gitExecutor.openAndCreateRepository(this.reposRoot);
 		assertTrue(Files.isDirectory(this.reposRoot));
 		assertTrue(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
 	}
 
 	@Test
-	public void testCreateRepositoryNewlyCreatedReposIsValid() throws Exception {
-		Repository repository = this.gitExecutor.createRepository(this.reposRoot);
+	public void testOpenAndCreateRepositoryNewlyCreatedReposIsValid() throws Exception {
+		Repository repository = this.gitExecutor.openAndCreateRepository(this.reposRoot);
 		Git git = new Git(repository);
 		Status status = git.status().call();
 		assertEquals(0, status.getAdded().size());
