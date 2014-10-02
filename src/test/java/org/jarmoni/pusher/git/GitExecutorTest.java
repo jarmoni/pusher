@@ -1,5 +1,6 @@
 package org.jarmoni.pusher.git;
 
+import static org.jarmoni.pusher.git.GitExecutor.GIT_DIR_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -44,17 +45,17 @@ public class GitExecutorTest {
 	@Test
 	public void testCreateRepositoryGitFolderAlreadyPresent() throws Exception {
 		this.ee.expect(RuntimeException.class);
-		this.ee.expectMessage("Directory already contains a '.git'-folder");
-		final Path gitDir = this.reposRoot.resolve(".git");
+		this.ee.expectMessage("Directory already contains a '" + GIT_DIR_NAME + "'-folder");
+		final Path gitDir = this.reposRoot.resolve(GIT_DIR_NAME);
 		Files.createDirectory(gitDir);
 		this.gitExecutor.createRepository(this.reposRoot);
 	}
 
 	@Test
 	public void testCreateRepositoryReposFolderAlreadyPresent() throws Exception {
-		assertFalse(Files.isDirectory(this.reposRoot.resolve(".git")));
+		assertFalse(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
 		this.gitExecutor.createRepository(this.reposRoot);
-		assertTrue(Files.isDirectory(this.reposRoot.resolve(".git")));
+		assertTrue(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
 	}
 
 	@Test
@@ -63,7 +64,7 @@ public class GitExecutorTest {
 		assertFalse(Files.isDirectory(this.reposRoot));
 		this.gitExecutor.createRepository(this.reposRoot);
 		assertTrue(Files.isDirectory(this.reposRoot));
-		assertTrue(Files.isDirectory(this.reposRoot.resolve(".git")));
+		assertTrue(Files.isDirectory(this.reposRoot.resolve(GIT_DIR_NAME)));
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class GitExecutorTest {
 	@Test
 	public void testCommitChanges() throws Exception {
 		// Create bare repos
-		final Repository bareRepos = FileRepositoryBuilder.create(this.reposRoot.resolve(".git").toFile());
+		final Repository bareRepos = FileRepositoryBuilder.create(this.reposRoot.resolve(GIT_DIR_NAME).toFile());
 		bareRepos.create(true);
 		Path clonePath = Paths.get(this.tf.newFolder("root").toURI());
 		Git git = Git.cloneRepository().setURI(this.reposRoot.toString()).setDirectory(clonePath.toFile()).call();

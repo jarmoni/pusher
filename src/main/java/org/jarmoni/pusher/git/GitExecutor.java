@@ -38,14 +38,14 @@ public class GitExecutor {
 				return this.createRepositoryInternal(directory);
 			}
 			else {
-				throw new RuntimeException("Directory already contains a '.git'-folder");
+				throw new RuntimeException("Directory already contains a '" + GIT_DIR_NAME + "'-folder");
 			}
 		}
 	}
 
 	private Repository createRepositoryInternal(final Path directory) {
 		try {
-			final Repository repos = FileRepositoryBuilder.create(directory.resolve(".git").toFile());
+			final Repository repos = FileRepositoryBuilder.create(directory.resolve(GIT_DIR_NAME).toFile());
 			repos.create();
 			repos.close();
 			return repos;
