@@ -11,6 +11,9 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.easymock.EasyMock;
+import org.eclipse.jgit.lib.Repository;
+import org.jarmoni.pusher.git.GitExecutor;
 import org.jarmoni.resource.RepositoryResource;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,6 +33,7 @@ public class PusherServiceTest {
 	private Path appHome;
 	private Path reposFile;
 	private PusherService pusherService;
+	private GitExecutor gitExecutor = EasyMock.createMock(GitExecutor.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,14 +41,16 @@ public class PusherServiceTest {
 		assertTrue(Files.isDirectory(this.appHome));
 		this.reposFile = appHome.resolve(REPOS_FILE_NAME);
 		assertFalse(Files.exists(this.reposFile));
-		this.pusherService = new PusherService(this.appHome.toString());
+		this.gitExecutor = EasyMock.createMock(GitExecutor.class);
+		this.pusherService = new PusherService(this.appHome.toString(), this.gitExecutor);
 	}
 
 	@Test
 	public void testConstructorCreateMissingFolder() throws Exception {
 		Files.deleteIfExists(this.appHome);
 		assertFalse(Files.exists(this.appHome));
-		this.pusherService = new PusherService(this.appHome.toString());
+		this.pusherService = new PusherService(this.appHome.toString(), this.gitExecutor);
+		assertTrue(Files.exists(this.appHome));
 	}
 
 	@Test
@@ -56,12 +62,16 @@ public class PusherServiceTest {
 	@Test
 	public void testReloadRepositoriesReposFileExists() throws Exception {
 		assertFalse(Files.exists(reposFile));
+		Repository repos = EasyMock.createMock(Repository.class);
+		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(repos).times(2);
+		EasyMock.replay(this.gitExecutor, repos);
 		final long len = Files.copy(this.getClass().getResourceAsStream("test.json"), this.reposFile);
 		assertTrue(len > 0);
 		assertTrue(Files.exists(reposFile));
-		this.pusherService = new PusherService(appHome.toString());
+		this.pusherService = new PusherService(appHome.toString(), this.gitExecutor);
 		this.pusherService.reloadRepositories();
 		assertEquals(2, this.pusherService.getRepositories().size());
+		EasyMock.verify(this.gitExecutor, repos);
 	}
 
 	@Test
