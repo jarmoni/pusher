@@ -12,7 +12,7 @@
 
 	<name>${project.artifactId}</name>
 	<description>trigger-service for git</description>
-	
+
 	<!-- url and scm should be inherited but are required due to https://jira.codehaus.org/browse/SCM-531 -->
 	<url>https://github.com/jarmoni/pusher</url>
 
@@ -37,19 +37,18 @@
 
 	<build>
 		<plugins>
-<!-- reactivate checkstyle when java8 is fully supported -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-checkstyle-plugin</artifactId> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 				<artifactId>maven-java-formatter-plugin</artifactId>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.jacoco</groupId> -->
-<!-- 				<artifactId>jacoco-maven-plugin</artifactId> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.jacoco</groupId> -->
+			<!-- <artifactId>jacoco-maven-plugin</artifactId> -->
+			<!-- </plugin> -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -60,7 +59,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-            <!-- Import dependency management from Spring Boot -->
+				<!-- Import dependency management from Spring Boot -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
 				<version>${spring.boot.version}</version>
