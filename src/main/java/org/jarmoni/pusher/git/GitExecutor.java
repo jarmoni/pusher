@@ -62,10 +62,13 @@ public class GitExecutor {
 		}
 	}
 
-	public void commitChanges(Repository repos, RepositoryResource reposResource) {
-		Git git = new Git(repos);
+	public void commitChanges(final Repository repos, final RepositoryResource reposResource) {
+		final Git git = new Git(repos);
 		try {
-			Status status = git.status().call();
+			final Status status = git.status().call();
+			if (status.isClean()) {
+				return;
+			}
 			if (!status.getConflicting().isEmpty()) {
 				throw new IllegalStateException("Repository contains conflicted files. Repos=" + repos);
 			}
@@ -78,7 +81,7 @@ public class GitExecutor {
 				git.push().setRemote("origin").setPushAll().call();
 			}
 		}
-		catch (Throwable t) {
+		catch (final Throwable t) {
 			throw Throwables.propagate(t);
 		}
 	}

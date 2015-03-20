@@ -7,12 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.lib.Repository;
 import org.jarmoni.pusher.git.GitExecutor;
 import org.jarmoni.resource.RepositoryResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,11 +31,15 @@ public class PusherService implements IPusherService {
 	private Path appHome;
 	private final Path reposFile;
 
-	private Map<String, Pair<Repository, RepositoryResource>> repositories = Maps.newHashMap();
+	private final Map<String, Pair<Repository, RepositoryResource>> repositories = Maps.newHashMap();
 
-	private GitExecutor gitExecutor;
+	private final GitExecutor gitExecutor;
 
-	public PusherService(final String appHome, GitExecutor gitExecutor) {
+	private final Timer timer;
+
+	private static final Logger LOG = LoggerFactory.getLogger(PusherService.class);
+
+	public PusherService(final String appHome, final GitExecutor gitExecutor) {
 		this.gitExecutor = Preconditions.checkNotNull(gitExecutor);
 		final Path path = Paths.get(Preconditions.checkNotNull(appHome));
 		if (Files.isDirectory(path)) {
@@ -46,13 +54,20 @@ public class PusherService implements IPusherService {
 			}
 		}
 		this.reposFile = this.appHome.resolve(REPOS_FILE_NAME);
+		this.reloadRepositories();
+		this.timer = new Timer("GitTimer");
+		this.timer.scheduleAtFixedRate(new GitTimerTask(), 0L, 60 * 1000L);
+	}
+
+	public void stop() {
+		this.timer.cancel();
 	}
 
 	void reloadRepositories() {
 		if (Files.isRegularFile(this.reposFile)) {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
 				final ObjectMapper mapper = new ObjectMapper();
-				List<RepositoryResource> reposList = mapper.readValue(is, new TypeReference<List<RepositoryResource>>(){});
+				final List<RepositoryResource> reposList = mapper.readValue(is, new TypeReference<List<RepositoryResource>>(){});
 				reposList.forEach(res -> this.repositories.put(res.getName(), Pair.of(this.gitExecutor.openRepository(Paths.get(res.getPath(), GitExecutor.GIT_DIR_NAME)), res)));
 			}
 			catch (final Throwable t) {
@@ -111,13 +126,29 @@ public class PusherService implements IPusherService {
 		// TODO Do the trigger-stuff here.....
 	}
 
-	private Pair<Repository, RepositoryResource> checkReposExist(String name, boolean mustExist) {
+	private Pair<Repository, RepositoryResource> checkReposExist(final String name, final boolean mustExist) {
 		if (mustExist) {
 			return Preconditions.checkNotNull(this.repositories.get(name), "Repository does not exist. Repository=" + name);
 		}
 		else {
 			Preconditions.checkState(this.repositories.get(name) == null, "Repository does already exist. Repository=" + name);
 			return null;
+		}
+	}
+
+	public class GitTimerTask extends TimerTask {
+
+		@Override
+		public void run() {
+			repositories.entrySet().forEach(p -> {
+				try {
+					gitExecutor.commitChanges(p.getValue().getLeft(), p.getValue().getRight());
+				}
+				catch(final Exception ex) {
+					LOG.warn("Exception occured", ex);
+				}
+			});
+
 		}
 	}
 }
