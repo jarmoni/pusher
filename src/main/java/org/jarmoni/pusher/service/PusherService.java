@@ -68,6 +68,7 @@ public class PusherService implements IPusherService {
 	}
 
 	void reloadRepositories() {
+		this.unregisterRepositories();
 		if (Files.isRegularFile(this.reposFile)) {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
 				final ObjectMapper mapper = new ObjectMapper();
@@ -78,6 +79,16 @@ public class PusherService implements IPusherService {
 			catch (final Throwable t) {
 				Throwables.propagate(t);
 			}
+		}
+	}
+
+	void unregisterRepositories() {
+		try {
+			LOG.info("disabled atm...");
+			// unregister all repositories: remove watcher, clear list....
+		}
+		catch (final Throwable t) {
+			Throwables.propagate(t);
 		}
 	}
 
