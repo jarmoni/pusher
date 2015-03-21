@@ -11,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.jarmoni.restxe.common.Representation;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;

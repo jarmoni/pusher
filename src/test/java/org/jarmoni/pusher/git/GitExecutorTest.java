@@ -17,7 +17,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

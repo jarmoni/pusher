@@ -7,7 +7,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

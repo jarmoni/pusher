@@ -2,7 +2,7 @@ package org.jarmoni.pusher.service;
 
 import java.util.List;
 
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 
 public interface IPusherService {
 

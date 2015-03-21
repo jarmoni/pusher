@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jgit.lib.Repository;
 import org.jarmoni.pusher.git.GitExecutor;
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

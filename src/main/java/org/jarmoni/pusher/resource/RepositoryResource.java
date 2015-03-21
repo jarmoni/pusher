@@ -1,4 +1,4 @@
-package org.jarmoni.resource;
+package org.jarmoni.pusher.resource;
 
 public class RepositoryResource {
 

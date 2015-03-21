@@ -3,8 +3,8 @@ package org.jarmoni.pusher.controller;
 import java.util.stream.Collectors;
 
 import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.common.HttpVerb;
 import org.jarmoni.restxe.common.Item;
 import org.jarmoni.restxe.common.LinkFactory;

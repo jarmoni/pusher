@@ -1,8 +1,8 @@
 package org.jarmoni.pusher.controller;
 
 import org.jarmoni.pusher.TstMain;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.resource.RepositoryResource;
 import org.jarmoni.restxe.spring.RestTemplateFactory;
 import org.junit.After;
 import org.junit.Before;

@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import org.easymock.EasyMock;
 import org.eclipse.jgit.lib.Repository;
 import org.jarmoni.pusher.git.GitExecutor;
-import org.jarmoni.resource.RepositoryResource;
+import org.jarmoni.pusher.resource.RepositoryResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
