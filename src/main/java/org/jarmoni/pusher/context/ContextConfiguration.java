@@ -32,7 +32,7 @@ public class ContextConfiguration {
 		return new RepositoryLinkCreator(this.linkFactory());
 	}
 
-	@Bean
+	@Bean(initMethod = "init")
 	public IPusherService pusherService() {
 		return new PusherService(this.appHome, this.gitExecutor());
 	}

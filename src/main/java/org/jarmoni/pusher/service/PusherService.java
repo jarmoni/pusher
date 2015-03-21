@@ -28,6 +28,8 @@ public class PusherService implements IPusherService {
 
 	public static final String REPOS_FILE_NAME = "repos.json";
 
+	private static final Logger LOG = LoggerFactory.getLogger(PusherService.class);
+
 	private Path appHome;
 	private final Path reposFile;
 
@@ -36,8 +38,6 @@ public class PusherService implements IPusherService {
 	private final GitExecutor gitExecutor;
 
 	private final Timer timer;
-
-	private static final Logger LOG = LoggerFactory.getLogger(PusherService.class);
 
 	public PusherService(final String appHome, final GitExecutor gitExecutor) {
 		this.gitExecutor = Preconditions.checkNotNull(gitExecutor);
@@ -54,8 +54,12 @@ public class PusherService implements IPusherService {
 			}
 		}
 		this.reposFile = this.appHome.resolve(REPOS_FILE_NAME);
-		this.reloadRepositories();
 		this.timer = new Timer("GitTimer");
+	}
+
+	// Lifecycle-method
+	public void init() {
+		this.reloadRepositories();
 		this.timer.scheduleAtFixedRate(new GitTimerTask(), 0L, 60 * 1000L);
 	}
 
@@ -68,7 +72,8 @@ public class PusherService implements IPusherService {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
 				final ObjectMapper mapper = new ObjectMapper();
 				final List<RepositoryResource> reposList = mapper.readValue(is, new TypeReference<List<RepositoryResource>>(){});
-				reposList.forEach(res -> this.repositories.put(res.getName(), Pair.of(this.gitExecutor.openRepository(Paths.get(res.getPath(), GitExecutor.GIT_DIR_NAME)), res)));
+				reposList.forEach(res -> this.repositories.put(res.getName(), Pair.of(this.gitExecutor.openRepository(Paths.get(res.getPath(), GitExecutor.GIT_DIR_NAME)), res))
+						);
 			}
 			catch (final Throwable t) {
 				Throwables.propagate(t);

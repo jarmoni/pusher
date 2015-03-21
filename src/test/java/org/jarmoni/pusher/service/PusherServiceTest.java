@@ -62,7 +62,7 @@ public class PusherServiceTest {
 	@Test
 	public void testReloadRepositoriesReposFileExists() throws Exception {
 		assertFalse(Files.exists(reposFile));
-		Repository repos = EasyMock.createMock(Repository.class);
+		final Repository repos = EasyMock.createMock(Repository.class);
 		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(repos).times(2);
 		EasyMock.replay(this.gitExecutor, repos);
 		final long len = Files.copy(this.getClass().getResourceAsStream("test.json"), this.reposFile);
@@ -87,7 +87,6 @@ public class PusherServiceTest {
 		RepositoryResource repos = this.pusherService.getRepository("myrepos");
 		assertNotSame("/one/two/three", repos.getPath());
 		repos = RepositoryResource.builder().name(repos.getName()).path("/one/two/three").build();
-		System.out.println(repos);
 		this.pusherService.updateRepository(repos);
 		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").getPath());
 	}

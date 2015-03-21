@@ -85,50 +85,66 @@ public class RepositoryResource {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		RepositoryResource other = (RepositoryResource) obj;
-		if (autoCommit != other.autoCommit)
+		}
+		final RepositoryResource other = (RepositoryResource) obj;
+		if (autoCommit != other.autoCommit) {
 			return false;
-		if (autoPull != other.autoPull)
+		}
+		if (autoPull != other.autoPull) {
 			return false;
-		if (autoPush != other.autoPush)
+		}
+		if (autoPush != other.autoPush) {
 			return false;
+		}
 		if (commitMsg == null) {
-			if (other.commitMsg != null)
+			if (other.commitMsg != null) {
 				return false;
+			}
 		}
-		else if (!commitMsg.equals(other.commitMsg))
+		else if (!commitMsg.equals(other.commitMsg)) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
+			}
 		}
-		else if (!name.equals(other.name))
+		else if (!name.equals(other.name)) {
 			return false;
+		}
 		if (path == null) {
-			if (other.path != null)
+			if (other.path != null) {
 				return false;
+			}
 		}
-		else if (!path.equals(other.path))
+		else if (!path.equals(other.path)) {
 			return false;
+		}
 		if (userEmail == null) {
-			if (other.userEmail != null)
+			if (other.userEmail != null) {
 				return false;
+			}
 		}
-		else if (!userEmail.equals(other.userEmail))
+		else if (!userEmail.equals(other.userEmail)) {
 			return false;
+		}
 		if (userName == null) {
-			if (other.userName != null)
+			if (other.userName != null) {
 				return false;
+			}
 		}
-		else if (!userName.equals(other.userName))
+		else if (!userName.equals(other.userName)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -153,7 +169,7 @@ public class RepositoryResource {
 			return this;
 		}
 
-		public RepositoryResourceBuilder path(String path) {
+		public RepositoryResourceBuilder path(final String path) {
 			this.repository.path = path;
 			return this;
 		}
