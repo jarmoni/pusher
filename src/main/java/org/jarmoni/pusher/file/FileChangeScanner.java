@@ -50,7 +50,7 @@ public class FileChangeScanner {
 			WatchKey key = watchService.take();
 			while (key != null && !stopped) {
 				for (final WatchEvent<?> event : key.pollEvents()) {
-					LOG.debug("Received event={}, Path={}", event, this.path);
+					LOG.debug("Received event={}, Path={}", event, path);
 					this.changeListener.fileChanged((WatchEvent<Path>) event);
 				}
 				key.reset();
