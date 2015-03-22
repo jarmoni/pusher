@@ -6,6 +6,10 @@ import org.jarmoni.pusher.resource.RepositoryResource;
 
 public interface IPusherService {
 
+	void start();
+
+	void stop();
+
 	List<RepositoryResource> getRepositories();
 
 	RepositoryResource getRepository(final String name);

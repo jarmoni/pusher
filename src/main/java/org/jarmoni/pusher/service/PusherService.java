@@ -37,7 +37,7 @@ public class PusherService implements IPusherService {
 
 	private final GitExecutor gitExecutor;
 
-	private final Timer timer;
+	private Timer timer;
 
 	public PusherService(final String appHome, final GitExecutor gitExecutor) {
 		this.gitExecutor = Preconditions.checkNotNull(gitExecutor);
@@ -54,17 +54,20 @@ public class PusherService implements IPusherService {
 			}
 		}
 		this.reposFile = this.appHome.resolve(REPOS_FILE_NAME);
-		this.timer = new Timer("GitTimer");
 	}
 
-	// Lifecycle-method
-	public void init() {
+	@Override
+	public void start() {
 		this.reloadRepositories();
+		this.timer = new Timer("GitTimer");
 		this.timer.scheduleAtFixedRate(new GitTimerTask(), 0L, 60 * 1000L);
 	}
 
+	@Override
 	public void stop() {
+		this.unregisterRepositories();
 		this.timer.cancel();
+		this.timer = null;
 	}
 
 	void reloadRepositories() {
