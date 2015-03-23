@@ -53,20 +53,25 @@ public class PusherService implements IPusherService {
 			}
 		}
 		this.reposFile = this.appHome.resolve(REPOS_FILE_NAME);
+		LOG.info("Initialized with appHome={}, reposFile={}", this.appHome, this.reposFile);
 	}
 
 	@Override
 	public void start() {
+		LOG.info("Trying to start PusherService....");
 		this.reloadRepositories();
 		this.timer = new Timer("GitTimer");
 		this.timer.scheduleAtFixedRate(new GitTimerTask(), 0L, 60 * 1000L);
+		LOG.info("PusherService started");
 	}
 
 	@Override
 	public void stop() {
+		LOG.info("Trying to stop PusherService....");
 		this.unregisterRepositories();
 		this.timer.cancel();
 		this.timer = null;
+		LOG.info("PusherService stopped");
 	}
 
 	void reloadRepositories() {
