@@ -16,6 +16,8 @@ import org.jarmoni.pusher.repository.RepositoryInstance;
 import org.jarmoni.pusher.resource.RepositoryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 
+@ManagedResource(objectName = "org.jarmoni.pusher.service:name=PusherService")
 public class PusherService implements IPusherService {
 
 	public static final String REPOS_FILE_NAME = "repos.json";
@@ -60,6 +63,7 @@ public class PusherService implements IPusherService {
 	public void start() {
 		LOG.info("Trying to start PusherService....");
 		this.reloadRepositories();
+		this.startInstances();
 		this.timer = new Timer("GitTimer");
 		this.timer.scheduleAtFixedRate(new GitTimerTask(), 0L, 60 * 1000L);
 		LOG.info("PusherService started");
@@ -89,6 +93,10 @@ public class PusherService implements IPusherService {
 		}
 	}
 
+	private void startInstances() {
+		this.repositoryInstances.entrySet().forEach(entry -> entry.getValue().start());
+	}
+
 	void unregisterRepositories() {
 		LOG.info("Trying to unregister Repositories...");
 		this.repositoryInstances.entrySet().forEach(entry -> entry.getValue().stop());
@@ -106,8 +114,14 @@ public class PusherService implements IPusherService {
 		}
 	}
 
+	@ManagedAttribute
 	public String getAppHome() {
 		return this.appHome.toString();
+	}
+
+	@ManagedAttribute
+	public String getReposFile() {
+		return this.reposFile.toString();
 	}
 
 	@Override
@@ -167,4 +181,5 @@ public class PusherService implements IPusherService {
 			repositoryInstances.entrySet().forEach(entry -> gitExecutor.commitChanges(entry.getValue().getRepository(), entry.getValue().getRepositoryResource()));
 		}
 	}
+
 }
