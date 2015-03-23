@@ -33,12 +33,15 @@ public class FileChangeScanner {
 	}
 
 	public void start() {
+		LOG.info("Trying to start FileChangeScanner for path={}...", this.path);
 		this.scannerThread = () -> scan(this.path);
 		Executors.newSingleThreadExecutor().execute(this.scannerThread);
 		this.stopped = false;
+		LOG.info("FileChangeScanner has started. Scanning path={}", this.path);
 	}
 
 	public void stop() {
+		LOG.info("Trying to stop FileChangeScanner for path={}...", this.path);
 		this.stopped = true;
 
 	}
@@ -62,6 +65,7 @@ public class FileChangeScanner {
 		}
 		finally {
 			this.stopped = true;
+			LOG.info("FileChangeScanner has stopped. Path={}", this.path);
 		}
 	}
 }
