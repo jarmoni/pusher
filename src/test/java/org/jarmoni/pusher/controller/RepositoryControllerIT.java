@@ -4,7 +4,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.jarmoni.pusher.service.PusherServiceTest.createRepository;
+import static org.jarmoni.pusher.service.PusherServiceTest.createRepositoryResource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,7 +24,7 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetRepository() throws Exception {
-		expect(this.getPusherService().getRepository("myrepos")).andReturn(createRepository());
+		expect(this.getPusherService().getRepository("myrepos")).andReturn(createRepositoryResource());
 		replay(this.getPusherService());
 		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
@@ -44,7 +44,7 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 		// TODO: Strange beheaviour. Refresh of ApplicationContext seems to fail
 		// if no timeout is set. Check this....
 		Thread.sleep(5000L);
-		final RepositoryResource repos = createRepository();
+		final RepositoryResource repos = createRepositoryResource();
 		final RepositoryResource reposReturn = RepositoryResource.builder().name(repos.getName()).path(repos.getPath())
 				.autoCommit(!repos.isAutoCommit()).build();
 

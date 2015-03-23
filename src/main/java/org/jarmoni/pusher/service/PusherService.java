@@ -11,9 +11,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.jgit.lib.Repository;
 import org.jarmoni.pusher.git.GitExecutor;
+import org.jarmoni.pusher.repository.RepositoryInstance;
 import org.jarmoni.pusher.resource.RepositoryResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,7 @@ public class PusherService implements IPusherService {
 	private Path appHome;
 	private final Path reposFile;
 
-	private final Map<String, Pair<Repository, RepositoryResource>> repositories = Maps.newHashMap();
+	private final Map<String, RepositoryInstance> repositoryInstances = Maps.newHashMap();
 
 	private final GitExecutor gitExecutor;
 
@@ -76,8 +75,8 @@ public class PusherService implements IPusherService {
 			try (final InputStream is = Files.newInputStream(this.reposFile)) {
 				final ObjectMapper mapper = new ObjectMapper();
 				final List<RepositoryResource> reposList = mapper.readValue(is, new TypeReference<List<RepositoryResource>>(){});
-				reposList.forEach(res -> this.repositories.put(res.getName(), Pair.of(this.gitExecutor.openRepository(Paths.get(res.getPath(), GitExecutor.GIT_DIR_NAME)), res))
-						);
+				reposList.forEach(res ->
+				this.repositoryInstances.put(res.getName(), new RepositoryInstance(this.gitExecutor.openRepository(Paths.get(res.getPath(), GitExecutor.GIT_DIR_NAME)), res, gitExecutor)));
 			}
 			catch (final Throwable t) {
 				Throwables.propagate(t);
@@ -86,13 +85,10 @@ public class PusherService implements IPusherService {
 	}
 
 	void unregisterRepositories() {
-		try {
-			LOG.info("disabled atm...");
-			// unregister all repositories: remove watcher, clear list....
-		}
-		catch (final Throwable t) {
-			Throwables.propagate(t);
-		}
+		LOG.info("Trying to unregister Repositories...");
+		this.repositoryInstances.entrySet().forEach(entry -> entry.getValue().stop());
+		this.repositoryInstances.clear();
+		LOG.info("Unregistered Repositories");
 	}
 
 	void saveRepositories() {
@@ -111,63 +107,59 @@ public class PusherService implements IPusherService {
 
 	@Override
 	public List<RepositoryResource> getRepositories() {
-		return this.repositories.entrySet().stream().map(e -> e.getValue().getRight()).collect(Collectors.toList());
+		return this.repositoryInstances.entrySet().stream().map(entry -> entry.getValue().getRepositoryResource()).collect(Collectors.toList());
 	}
 
 	@Override
 	public RepositoryResource getRepository(final String name) {
-		return this.checkReposExist(name, true).getRight();
+		final RepositoryInstance repositoryInstance = this.repositoryInstances.get(name);
+		return repositoryInstance != null ? repositoryInstance.getRepositoryResource() : null;
 	}
 
 	@Override
-	public RepositoryResource createRepository(final RepositoryResource repository) {
-		this.checkReposExist(repository.getName(), false);
-		this.repositories.put(repository.getName(),
-				Pair.of(this.gitExecutor.openAndCreateRepository(Paths.get(repository.getPath())), repository));
-		return repository;
+	public RepositoryResource createRepository(final RepositoryResource repositoryResource) {
+		LOG.info("Trying to create RepositoryInstance for RepositoryResource={}...", repositoryResource);
+		this.repositoryInstances.put(repositoryResource.getName(),
+				new RepositoryInstance(this.gitExecutor.openAndCreateRepository(Paths.get(repositoryResource.getPath())),
+						repositoryResource, this.gitExecutor));
+		LOG.info("Created RepositoryInstance for RepositoryResource={}", repositoryResource);
+		return repositoryResource;
 	}
 
 	@Override
 	public void deleteRepository(final String name) {
-		this.checkReposExist(name, true);
-		this.repositories.remove(name);
+		final RepositoryInstance repositoryInstance = this.repositoryInstances.get(name);
+		if (repositoryInstance != null) {
+			LOG.info("Trying to delete RepositoryInstance={}...", name);
+			repositoryInstance.stop();
+			this.repositoryInstances.remove(name);
+			this.saveRepositories();
+			LOG.info("Deleted RepositoryInstance={}", name);
+		}
+		else {
+			LOG.info("RepositoryInstance does not exist={}", name);
+		}
 	}
 
 	@Override
 	public RepositoryResource updateRepository(final RepositoryResource repository) {
-		this.repositories.put(repository.getName(),
-				Pair.of(this.checkReposExist(repository.getName(), true).getLeft(), repository));
-		return repository;
+		// What should we allow in this method in future??? Just renaming? Or
+		// moving working copy?
+		this.deleteRepository(repository.getName());
+		return this.createRepository(repository);
 	}
 
 	@Override
 	public void triggerRepository(final String name) {
-		// TODO Do the trigger-stuff here.....
-	}
-
-	private Pair<Repository, RepositoryResource> checkReposExist(final String name, final boolean mustExist) {
-		if (mustExist) {
-			return Preconditions.checkNotNull(this.repositories.get(name), "Repository does not exist. Repository=" + name);
-		}
-		else {
-			Preconditions.checkState(this.repositories.get(name) == null, "Repository does already exist. Repository=" + name);
-			return null;
-		}
+		final RepositoryInstance repositoryInstance = this.repositoryInstances.get(name);
+		this.gitExecutor.commitChanges(repositoryInstance.getRepository(), repositoryInstance.getRepositoryResource());
 	}
 
 	public class GitTimerTask extends TimerTask {
 
 		@Override
 		public void run() {
-			repositories.entrySet().forEach(p -> {
-				try {
-					gitExecutor.commitChanges(p.getValue().getLeft(), p.getValue().getRight());
-				}
-				catch(final Exception ex) {
-					LOG.warn("Exception occured", ex);
-				}
-			});
-
+			repositoryInstances.entrySet().forEach(entry -> gitExecutor.commitChanges(entry.getValue().getRepository(), entry.getValue().getRepositoryResource()));
 		}
 	}
 }

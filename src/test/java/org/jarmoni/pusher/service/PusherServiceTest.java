@@ -10,6 +10,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.easymock.EasyMock;
 import org.eclipse.jgit.lib.Repository;
@@ -33,7 +34,8 @@ public class PusherServiceTest {
 	private Path appHome;
 	private Path reposFile;
 	private PusherService pusherService;
-	private GitExecutor gitExecutor = EasyMock.createMock(GitExecutor.class);
+	private final GitExecutor gitExecutor = EasyMock.createMock(GitExecutor.class);
+	private final Repository repository = EasyMock.createMock(Repository.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,7 +43,6 @@ public class PusherServiceTest {
 		assertTrue(Files.isDirectory(this.appHome));
 		this.reposFile = appHome.resolve(REPOS_FILE_NAME);
 		assertFalse(Files.exists(this.reposFile));
-		this.gitExecutor = EasyMock.createMock(GitExecutor.class);
 		this.pusherService = new PusherService(this.appHome.toString(), this.gitExecutor);
 	}
 
@@ -62,43 +63,62 @@ public class PusherServiceTest {
 	@Test
 	public void testReloadRepositoriesReposFileExists() throws Exception {
 		assertFalse(Files.exists(reposFile));
-		final Repository repos = EasyMock.createMock(Repository.class);
-		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(repos).times(2);
-		EasyMock.replay(this.gitExecutor, repos);
+		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(this.repository).times(2);
+		EasyMock.replay(this.gitExecutor, this.repository);
 		final long len = Files.copy(this.getClass().getResourceAsStream("test.json"), this.reposFile);
 		assertTrue(len > 0);
 		assertTrue(Files.exists(reposFile));
 		this.pusherService = new PusherService(appHome.toString(), this.gitExecutor);
 		this.pusherService.reloadRepositories();
 		assertEquals(2, this.pusherService.getRepositories().size());
-		EasyMock.verify(this.gitExecutor, repos);
+		EasyMock.verify(this.gitExecutor, this.repository);
 	}
 
 	@Test
 	public void testCreateRepository() throws Exception {
 		assertEquals(0, this.pusherService.getRepositories().size());
-		this.pusherService.createRepository(createRepository());
+		final RepositoryResource repositoryResource = createRepositoryResource();
+		EasyMock.expect(this.gitExecutor.openAndCreateRepository(Paths.get(repositoryResource.getPath()))).andReturn(
+				this.repository);
+		EasyMock.replay(this.gitExecutor, this.repository);
+		this.pusherService.createRepository(repositoryResource);
 		assertEquals(1, this.pusherService.getRepositories().size());
+		EasyMock.verify(this.gitExecutor, this.repository);
 	}
 
 	@Test
 	public void testUpdateRepository() throws Exception {
-		this.pusherService.createRepository(createRepository());
-		RepositoryResource repos = this.pusherService.getRepository("myrepos");
-		assertNotSame("/one/two/three", repos.getPath());
-		repos = RepositoryResource.builder().name(repos.getName()).path("/one/two/three").build();
-		this.pusherService.updateRepository(repos);
+		final RepositoryResource repositoryResourceOrig = createRepositoryResource();
+		final RepositoryResource repositoryResourceNew = RepositoryResource.builder().name(repositoryResourceOrig.getName())
+				.path("/one/two/three").build();
+
+		EasyMock.expect(this.gitExecutor.openAndCreateRepository(Paths.get(repositoryResourceOrig.getPath()))).andReturn(
+				this.repository);
+		EasyMock.expect(this.gitExecutor.openAndCreateRepository(Paths.get(repositoryResourceNew.getPath()))).andReturn(
+				this.repository);
+		EasyMock.replay(this.gitExecutor, this.repository);
+
+		this.pusherService.createRepository(repositoryResourceOrig);
+		final RepositoryResource repositoryResourceTmp = this.pusherService.getRepository("myrepos");
+		assertEquals(repositoryResourceOrig.getPath(), repositoryResourceTmp.getPath());
+		assertNotSame(repositoryResourceNew.getPath(), repositoryResourceTmp.getPath());
+
+		this.pusherService.updateRepository(repositoryResourceNew);
 		assertEquals("/one/two/three", this.pusherService.getRepository("myrepos").getPath());
+		EasyMock.verify(this.gitExecutor, this.repository);
 	}
 
 	@Test
 	public void testDeleteRepository() throws Exception {
-		this.pusherService.createRepository(createRepository());
+		final RepositoryResource repositoryResource = createRepositoryResource();
+		EasyMock.expect(this.gitExecutor.openAndCreateRepository(Paths.get(repositoryResource.getPath()))).andReturn(
+				this.repository);
+		EasyMock.replay(this.gitExecutor, this.repository);
+		this.pusherService.createRepository(repositoryResource);
 		assertNotNull(this.pusherService.getRepository("myrepos"));
 		this.pusherService.deleteRepository("myrepos");
-		this.ee.expect(RuntimeException.class);
-		this.ee.expectMessage("Repository does not exist");
 		assertNull(this.pusherService.getRepository("myrepos"));
+		EasyMock.verify(this.gitExecutor, this.repository);
 	}
 
 	@Test
@@ -118,7 +138,7 @@ public class PusherServiceTest {
 		assertFalse(Files.size(this.reposFile) == 0L);
 	}
 
-	public static RepositoryResource createRepository() {
+	public static RepositoryResource createRepositoryResource() {
 		return RepositoryResource.builder().autoCommit(true).autoPush(false).name("myrepos").path("/home/johndoe/myrepos")
 				.build();
 	}

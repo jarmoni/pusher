@@ -19,8 +19,8 @@ public class RepositoryInstance implements IFileChangeListener {
 	private final GitExecutor gitExecutor;
 	private FileChangeScanner fileChangeScanner;
 
-
-	public RepositoryInstance(final Repository repository, final RepositoryResource repositoryResource, final GitExecutor gitExecutor) {
+	public RepositoryInstance(final Repository repository, final RepositoryResource repositoryResource,
+			final GitExecutor gitExecutor) {
 		super();
 		this.repository = Preconditions.checkNotNull(repository);
 		this.repositoryResource = Preconditions.checkNotNull(repositoryResource);
@@ -33,14 +33,23 @@ public class RepositoryInstance implements IFileChangeListener {
 	}
 
 	public void stop() {
-		this.fileChangeScanner.stop();
-		this.fileChangeScanner = null;
+		if (this.fileChangeScanner != null) {
+			this.fileChangeScanner.stop();
+			this.fileChangeScanner = null;
+		}
 	}
-
 
 	@Override
 	public void fileChanged(final WatchEvent<Path> event) {
 		this.gitExecutor.commitChanges(this.repository, this.repositoryResource);
+	}
+
+	public Repository getRepository() {
+		return repository;
+	}
+
+	public RepositoryResource getRepositoryResource() {
+		return repositoryResource;
 	}
 
 }

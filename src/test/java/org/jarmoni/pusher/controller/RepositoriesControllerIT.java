@@ -3,7 +3,7 @@ package org.jarmoni.pusher.controller;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.jarmoni.pusher.service.PusherServiceTest.createRepository;
+import static org.jarmoni.pusher.service.PusherServiceTest.createRepositoryResource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -20,7 +20,7 @@ public class RepositoriesControllerIT extends AbstractControllerIT {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testListRepositories() throws Exception {
-		expect(this.getPusherService().getRepositories()).andReturn(Lists.newArrayList(createRepository()));
+		expect(this.getPusherService().getRepositories()).andReturn(Lists.newArrayList(createRepositoryResource()));
 		replay(this.getPusherService());
 		final Representation<RepositoryResource> response = this
 				.getRestTemplate()
@@ -36,7 +36,7 @@ public class RepositoriesControllerIT extends AbstractControllerIT {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateRepository() throws Exception {
-		final RepositoryResource repos = createRepository();
+		final RepositoryResource repos = createRepositoryResource();
 		expect(this.getPusherService().createRepository(repos)).andReturn(repos);
 		replay(this.getPusherService());
 		final Representation<RepositoryResource> response = this
