@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html ng-app="pusher" ng-controller="MainController">
+
+<head>
+	<link rel="stylesheet" href="/lib/bootstrap-3.1.1-dist/css/bootstrap.css"/>
+	<link rel="stylesheet" href="/lib/bootstrap-3.1.1-dist/css/bootstrap-theme.css"/>
+	
+	<link rel="icon" sizes="16x16 32x32" href="/img/pusher-icon.png">
+	<title ng-bind="'pusher' + titleSuffix">pusher</title>
+</head>
+
+<body>
+
+<div class="container-fluid ng-cloak">
+
+	<script src="/lib/lodash.js"></script>
+	<script src="/lib/jquery.js"></script>
+	<script src="/lib/bootstrap-3.1.1-dist/js/bootstrap.js"></script>
+	<script src="/lib/angular/angular.js"></script>
+	<script src="/lib/angular/angular-route.js"></script>
+	<script src="/lib/angular/angular-ui-router.js"></script>
+	
+	<script src="/js/app.js"></script>
+	<script src="/js/service/PusherService.js"></script>
+	<script src="/js/controller/MainController.js"></script>
+	
+	<div class="navbar navbar-default navbar-fixed-top" bs-navbar>
+        <div class="navbar-inner" style="padding-left: 15px">
+            <a class="navbar-brand" href="#" title="pusherVersion">&nbsp;<img src="/img/pusher-icon.png" style="height: 24px;">&nbsp;&nbsp;pusher&nbsp;&nbsp;
+
+            </a>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li ui-sref-active="active"><a ui-sref="repositories">Repositories</a></li>
+                    <li ui-sref-active="active"><a ui-sref="help">Help</a></li>
+                </ul>
+            </div>
+            </a>
+        </div>
+    </div>
+	<section style="margin-top: 64px" ui-view></section>
+</div>
+<div style="position: fixed; bottom; -30px; right: 10px; font-size: 80%" class="text-muted">pusherVersion</div>
+</body>
+</html>
