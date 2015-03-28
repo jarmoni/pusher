@@ -11,6 +11,13 @@ var app;
             .state('repositories', {
                 url: "/repositories",
                 templateUrl: '/js/repositories/repositories.html'
+            }).state('repository', {
+                url: "/:repositoryName",
+                parent: "repositories",
+                templateUrl: '/js/repository/repository.html'
+            }).state('events', {
+                url: "/:events",
+                templateUrl: '/js/events/events.html'
             }).state('help', {
                 url: "/help",
                 templateUrl: '/js/help/help.html'
