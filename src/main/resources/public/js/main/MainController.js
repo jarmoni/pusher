@@ -1,9 +1,8 @@
 (function () {
 	"use strict";
 
-	app.controller("MainController", function ($scope, PusherService) {
+	app.controller("MainController", function ($scope, $state, $stateParams, PusherService) {
 	
-		$scope.containers = PusherService.listRepositories();
 
 	});
 })();

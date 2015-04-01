@@ -1,12 +1,21 @@
 (function () {
     "use strict";
     app.factory('PusherService', function ($http) {
-		var PusherService = {};
-		PusherService.listRepositories = function listRepositories() {
-			return $http.get(app.urlPrefix + 'repositories/list').then(function(result) {
-				return result;
-			});
+        var PusherService = {};
+
+        var repositories = [{"name" : "repos1", "path" : "/var/log/xyz", "autoCommit" : true, "autoSync" : false}, {"name" : "repos2", "path" : "/home/xyz/bla", "autoCommit" : true, "autoSync" : true}, {"name" : "repos3", "path" : "/root/temp", "autoCommit" : false, "autoSync" : false}];
+
+        PusherService.listRepositories = function() {
+			return repositories;
 		};
+
+        PusherService.getRepository = function(name) {
+            return _.find(repositories, function(repos) {
+                return repos.name === name;
+            });
+        }
+
+
 		return PusherService;
 	});
 })();
