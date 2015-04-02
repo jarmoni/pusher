@@ -19,6 +19,13 @@
             return $scope.repository.name;
         }
 
+        $scope.update = function() {
+            var reposOrigName = $scope.repository.name;
+            PusherService.update($scope.reposOrigName, $scope.repository);
+            $scope.$parent.update();
+            $scope.reposOrigName = reposOrigName;
+        }
+
         // just for debugging:
         $scope.currentRepos = function() {
             return $scope.repository;

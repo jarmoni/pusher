@@ -5,5 +5,9 @@
 
         $scope.repositories = PusherService.listRepositories();
 
+        $scope.update = function() {
+            $scope.repositories = PusherService.listRepositories();
+        }
+
     });
 })();
