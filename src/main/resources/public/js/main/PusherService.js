@@ -15,14 +15,19 @@
         };
 
         PusherService.update = function(oldName, current) {
+            var modified = false;
             repositories.forEach(function(repos) {
                 if(oldName === repos.name) {
                     repos.name = current.name;
                     repos.path = current.path;
                     repos.autoCommit = current.autoCommit;
                     repos.autoSync = current.autoSync;
+                    modified = true;
                 }
             });
+            if(!modified) {
+                repositories.push(current);
+            }
         }
 
 

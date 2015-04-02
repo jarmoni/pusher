@@ -3,19 +3,19 @@
 
     app.controller("RepositoryController", function ($scope, $state, $stateParams, PusherService) {
 
-        var repository = PusherService.getRepository($stateParams["repositoryName"]);
+        //var repository = PusherService.getRepository($stateParams["repositoryName"]);
 
-        //var repository = null;
-        //var reposOrigName = "New Repository";
-        //var currentReposName = $stateParams["repositoryName"];
-        //
-        //if(currentReposName) {
-        //    repository = PusherService.getRepository($stateParams["repositoryName"]);
-        //    reposOrigName = repository.name;
-        //}
+        var repository = null;
+        var reposOrigName = "New Repository";
+        var currentReposName = $stateParams["repositoryName"];
+
+        if(currentReposName) {
+            repository = PusherService.getRepository(currentReposName);
+            reposOrigName = repository.name;
+        }
 
         $scope.repository = repository;
-        $scope.reposOrigName = repository.name;
+        $scope.reposOrigName = reposOrigName;
 
         $scope.formModified = function() {
             var repository = PusherService.getRepository($scope.repository.name);
