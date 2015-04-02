@@ -38,6 +38,13 @@
             $scope.reposOrigName = reposOrigName;
         }
 
+        $scope.delete = function() {
+            PusherService.delete($scope.repository.name);
+            $scope.$parent.update();
+            $state.go("noRepository");
+            $scope.reposOrigName = reposOrigName;
+        }
+
         // just for debugging:
         $scope.currentRepos = function() {
             return $scope.repository;

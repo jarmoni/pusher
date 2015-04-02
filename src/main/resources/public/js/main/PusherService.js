@@ -30,6 +30,13 @@
             }
         }
 
+        PusherService.delete = function(name) {
+            var newRepositories = _.filter(repositories, function(repos) {
+                return name !== repos.name;
+            });
+            repositories = newRepositories;
+        }
+
 
 		return PusherService;
 	});

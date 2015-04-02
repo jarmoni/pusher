@@ -17,6 +17,10 @@ var app;
                 url: "/:repositoryName",
                 //params: {'repositoryName' : null, 'repositoryPath' : null},
                 templateUrl: '/js/repository/repository.html'
+            }).state('noRepository', {
+                parent: "repositories",
+                //params: {'repositoryName' : null, 'repositoryPath' : null},
+                template: ''
             }).state('events', {
                 url: "/events",
                 templateUrl: '/js/events/events.html'
