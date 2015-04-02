@@ -42,7 +42,16 @@
             PusherService.delete($scope.repository.name);
             $scope.$parent.update();
             $state.go("noRepository");
-            $scope.reposOrigName = reposOrigName;
+        }
+
+        $scope.cancel = function() {
+            var repos = PusherService.getRepository($scope.reposOrigName);
+            if(repos) {
+                $scope.repository = repos;
+            }
+            else {
+                $state.go("noRepository");
+            }
         }
 
         // just for debugging:
