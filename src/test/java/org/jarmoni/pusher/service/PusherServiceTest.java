@@ -139,7 +139,7 @@ public class PusherServiceTest {
 	}
 
 	public static RepositoryResource createRepositoryResource() {
-		return RepositoryResource.builder().autoCommit(true).autoPush(false).name("myrepos").path("/home/johndoe/myrepos")
+		return RepositoryResource.builder().autoCommit(true).autoSync(false).name("myrepos").path("/home/johndoe/myrepos")
 				.build();
 	}
 }

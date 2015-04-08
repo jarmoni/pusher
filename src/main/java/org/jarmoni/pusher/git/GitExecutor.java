@@ -76,7 +76,7 @@ public class GitExecutor {
 			git.add().setUpdate(true).addFilepattern(".").call();
 			git.commit().setCommitter(reposResource.getUserName(), reposResource.getUserEmail())
 					.setMessage(reposResource.getCommitMsg()).call();
-			if (reposResource.isAutoPush()) {
+			if (reposResource.isAutoSync()) {
 				git.pull().setRemote("origin").setRemoteBranchName("master").call();
 				git.push().setRemote("origin").setPushAll().call();
 			}

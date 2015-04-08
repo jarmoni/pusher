@@ -189,7 +189,7 @@ public class GitExecutorTest {
 		assertEquals(1, status.getModified().size());
 		assertEquals(0, status.getRemoved().size());
 
-		final RepositoryResource reposResource = RepositoryResource.builder().name("myrepos").autoPush(true).userName("xyz")
+		final RepositoryResource reposResource = RepositoryResource.builder().name("myrepos").autoSync(true).userName("xyz")
 				.userEmail("xyz@abc.at").commitMsg("my msg").build();
 		this.gitExecutor.commitChanges(clone, reposResource);
 

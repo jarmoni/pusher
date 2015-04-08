@@ -18,13 +18,10 @@ public class RepositoryResource {
 	private boolean autoCommit = false;
 
 	/**
-	 * Optional. Indicates if pusher should pull from origin/master frequently
+	 * Optional. Indicates if pusher should pull from/push to origin/master
+	 * frequently
 	 */
-	private boolean autoPull = false;
-	/**
-	 * Optional. Indicates if pusher should push all changes to origin/master
-	 */
-	private boolean autoPush = false;
+	private boolean autoSync = false;
 
 	private String userName;
 	private String userEmail;
@@ -42,12 +39,8 @@ public class RepositoryResource {
 		return autoCommit;
 	}
 
-	public boolean isAutoPull() {
-		return autoPull;
-	}
-
-	public boolean isAutoPush() {
-		return autoPush;
+	public boolean isAutoSync() {
+		return autoSync;
 	}
 
 	public String getUserName() {
@@ -64,9 +57,8 @@ public class RepositoryResource {
 
 	@Override
 	public String toString() {
-		return "RepositoryResource [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoPull=" + autoPull
-				+ ", autoPush=" + autoPush + ", userName=" + userName + ", userEmail=" + userEmail + ", commitMsg=" + commitMsg
-				+ "]";
+		return "RepositoryResource [name=" + name + ", path=" + path + ", autoCommit=" + autoCommit + ", autoSync=" + autoSync
+				+ ", userName=" + userName + ", userEmail=" + userEmail + ", commitMsg=" + commitMsg + "]";
 	}
 
 	@Override
@@ -74,8 +66,7 @@ public class RepositoryResource {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (autoCommit ? 1231 : 1237);
-		result = prime * result + (autoPull ? 1231 : 1237);
-		result = prime * result + (autoPush ? 1231 : 1237);
+		result = prime * result + (autoSync ? 1231 : 1237);
 		result = prime * result + ((commitMsg == null) ? 0 : commitMsg.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
@@ -99,10 +90,7 @@ public class RepositoryResource {
 		if (autoCommit != other.autoCommit) {
 			return false;
 		}
-		if (autoPull != other.autoPull) {
-			return false;
-		}
-		if (autoPush != other.autoPush) {
+		if (autoSync != other.autoSync) {
 			return false;
 		}
 		if (commitMsg == null) {
@@ -179,13 +167,8 @@ public class RepositoryResource {
 			return this;
 		}
 
-		public RepositoryResourceBuilder autoPull(final boolean autoPull) {
-			this.repository.autoPull = autoPull;
-			return this;
-		}
-
-		public RepositoryResourceBuilder autoPush(final boolean autoPush) {
-			this.repository.autoPush = autoPush;
+		public RepositoryResourceBuilder autoSync(final boolean autoSync) {
+			this.repository.autoSync = autoSync;
 			return this;
 		}
 
