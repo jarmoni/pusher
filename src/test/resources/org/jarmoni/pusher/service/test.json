@@ -1,4 +1,5 @@
 [
-	{"name":"/home/johndoe/myrepos","path":null,"autoCommit":true,"autoSync":false},
-	{"name":"/usr/local/another_repos","path":null,"autoCommit":true,"autoSync":true}
+	{"name":"repos1", "path":"/home/johndoe/myrepos", "autoCommit":true,"autoSync":false},
+	{"name":"repos2", "path":"/usr/local/another_repos", "autoCommit":true,"autoSync":true},
+	{"name":"repos3", "path":"/var/xyz/and_one_more", "autoCommit":true,"autoSync":true}
 ]

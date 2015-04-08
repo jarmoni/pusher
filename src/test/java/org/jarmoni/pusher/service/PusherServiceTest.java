@@ -63,14 +63,14 @@ public class PusherServiceTest {
 	@Test
 	public void testReloadRepositoriesReposFileExists() throws Exception {
 		assertFalse(Files.exists(reposFile));
-		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(this.repository).times(2);
+		EasyMock.expect(this.gitExecutor.openRepository(EasyMock.anyObject(Path.class))).andReturn(this.repository).times(3);
 		EasyMock.replay(this.gitExecutor, this.repository);
 		final long len = Files.copy(this.getClass().getResourceAsStream("test.json"), this.reposFile);
 		assertTrue(len > 0);
 		assertTrue(Files.exists(reposFile));
 		this.pusherService = new PusherService(appHome.toString(), this.gitExecutor);
 		this.pusherService.reloadRepositories();
-		assertEquals(2, this.pusherService.getRepositories().size());
+		assertEquals(3, this.pusherService.getRepositories().size());
 		EasyMock.verify(this.gitExecutor, this.repository);
 	}
 
