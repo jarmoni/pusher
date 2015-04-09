@@ -5,12 +5,12 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.jarmoni.pusher.service.PusherServiceTest.createRepositoryResource;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
+import java.util.List;
 
+import org.easymock.EasyMock;
 import org.jarmoni.pusher.resource.RepositoryResource;
-import org.jarmoni.restxe.common.Representation;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -22,31 +22,23 @@ public class RepositoriesControllerIT extends AbstractControllerIT {
 	public void testListRepositories() throws Exception {
 		expect(this.getPusherService().getRepositories()).andReturn(Lists.newArrayList(createRepositoryResource()));
 		replay(this.getPusherService());
-		final Representation<RepositoryResource> response = this
-				.getRestTemplate()
-				.getForEntity(new URI("http://localhost:9899" + RepositoriesController.PATH_REPOSITORIES_LIST),
-						Representation.class).getBody();
+		final List<RepositoryResource> response = this.getRestTemplate()
+				.getForEntity(new URI("http://localhost:9899" + RepositoriesController.PATH_REPOSITORIES_LIST), List.class)
+				.getBody();
 		verify(this.getPusherService());
-		assertEquals(2, response.getLinks().size());
-		assertEquals(1, response.getItems().size());
-		assertNotNull(response.getItems().get(0).getData());
-		assertEquals(3, response.getItems().get(0).getLinks().size());
+		assertEquals(1, response.size());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testCreateRepository() throws Exception {
 		final RepositoryResource repos = createRepositoryResource();
-		expect(this.getPusherService().createRepository(repos)).andReturn(repos);
+		EasyMock.expect(this.getPusherService().createRepository(repos)).andReturn(createRepositoryResource());
 		replay(this.getPusherService());
-		final Representation<RepositoryResource> response = this
+		final RepositoryResource result = this
 				.getRestTemplate()
 				.postForEntity(new URI("http://localhost:9899" + RepositoriesController.PATH_REPOSITORIES_CREATE), repos,
-						Representation.class).getBody();
+						RepositoryResource.class).getBody();
 		verify(this.getPusherService());
-		assertEquals(1, response.getLinks().size());
-		assertEquals(1, response.getItems().size());
-		assertNotNull(response.getItems().get(0).getData());
-		assertEquals(3, response.getItems().get(0).getLinks().size());
+		assertEquals(repos, result);
 	}
 }

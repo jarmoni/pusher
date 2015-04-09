@@ -1,13 +1,7 @@
 package org.jarmoni.pusher.controller;
 
-import org.jarmoni.pusher.controller.util.RepositoryLinkCreator;
 import org.jarmoni.pusher.resource.RepositoryResource;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.restxe.common.HttpVerb;
-import org.jarmoni.restxe.common.Item;
-import org.jarmoni.restxe.common.LinkFactory;
-import org.jarmoni.restxe.common.LinkType;
-import org.jarmoni.restxe.common.Representation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,21 +24,12 @@ public class RepositoryController {
 
 	@Autowired
 	private IPusherService pusherService;
-	@Autowired
-	private LinkFactory linkFactory;
-	@Autowired
-	private RepositoryLinkCreator repositoryLinkCreator;
 
 	@RequestMapping(value = PATH_REPOSITORY_GET, method = RequestMethod.GET)
 	@ResponseBody
-	public Representation<RepositoryResource> getRepository(@PathVariable final String name) {
+	public RepositoryResource getRepository(@PathVariable final String name) {
 
-		return Representation
-				.<RepositoryResource> builder()
-				.item(Item.<RepositoryResource> builder().data(this.pusherService.getRepository(name))
-						.links(this.repositoryLinkCreator.createLinks(name)).build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF,
-						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, name), HttpVerb.GET)).build();
+		return this.pusherService.getRepository(name);
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_DELETE, method = RequestMethod.DELETE)
@@ -55,15 +40,8 @@ public class RepositoryController {
 
 	@RequestMapping(value = PATH_REPOSITORY_UPDATE, method = RequestMethod.PUT)
 	@ResponseBody
-	public Representation<RepositoryResource> updateRepository(@RequestBody final RepositoryResource repository) {
-		final RepositoryResource updatedRepos = this.pusherService.updateRepository(repository);
-		return Representation
-				.<RepositoryResource> builder()
-				.item(Item.<RepositoryResource> builder().data(updatedRepos)
-						.links(this.repositoryLinkCreator.createLinks(updatedRepos.getName())).build())
-				.link(this.linkFactory.createLink(LinkType.SELF_REF,
-						this.repositoryLinkCreator.replaceNameVariable(PATH_REPOSITORY_GET, updatedRepos.getName()), HttpVerb.GET))
-				.build();
+	public RepositoryResource updateRepository(@RequestBody final RepositoryResource repository) {
+		return this.pusherService.updateRepository(repository);
 	}
 
 	@RequestMapping(value = PATH_REPOSITORY_TRIGGER, method = RequestMethod.POST, params = "name")

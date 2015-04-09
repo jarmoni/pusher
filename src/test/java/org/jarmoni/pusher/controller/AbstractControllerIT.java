@@ -1,9 +1,7 @@
 package org.jarmoni.pusher.controller;
 
 import org.jarmoni.pusher.TstMain;
-import org.jarmoni.pusher.resource.RepositoryResource;
 import org.jarmoni.pusher.service.IPusherService;
-import org.jarmoni.restxe.spring.RestTemplateFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 public abstract class AbstractControllerIT {
 
-	private final RestTemplate restTemplate = RestTemplateFactory.createTemplate(RepositoryResource.class);
+	private final RestTemplate restTemplate = new RestTemplate();
 	private ConfigurableApplicationContext context;
 	private IPusherService pusherService;
 
