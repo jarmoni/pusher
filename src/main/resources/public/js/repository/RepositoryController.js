@@ -4,19 +4,22 @@
     app.controller("RepositoryController", function ($scope, $state, $stateParams, PusherService) {
 
         var NEW_REPOS = "New Repository";
-        //var repository = PusherService.getRepository($stateParams["repositoryName"]);
 
         var repository = null;
         var reposOrigName = NEW_REPOS;
+
         var currentReposName = $stateParams["repositoryName"];
 
         if(currentReposName) {
-            repository = PusherService.getRepository(currentReposName);
-            reposOrigName = repository.name;
+            PusherService.getRepository(currentReposName, function(callback) {
+                repository = callback;
+                reposOrigName = repository.name;
+                $scope.repository = repository;
+                $scope.reposOrigName = reposOrigName;
+            });
+
         }
 
-        $scope.repository = repository;
-        $scope.reposOrigName = reposOrigName;
 
         $scope.saveAllowed = function() {
             return valid() && modified();
@@ -31,10 +34,10 @@
         }
 
         $scope.update = function() {
-            var reposOrigName = $scope.repository.name;
             PusherService.update($scope.reposOrigName, $scope.repository);
             $scope.$parent.update();
-            $scope.reposOrigName = reposOrigName;
+            $scope.reposOrigName = $scope.repository.name;
+            //$state.go("repository", $scope.repository.name);
         }
 
         $scope.delete = function() {
@@ -53,15 +56,11 @@
             }
         }
 
-        // just for debugging:
-        $scope.currentRepos = function() {
-            return $scope.repository;
-        }
-
         function valid() {
-            var valid = $scope.repository && $scope.repository.name && $scope.repository.path;
-            console.log("valid=" + valid);
-            return valid;
+            if($scope.repository != null && $scope.repository.name != null && $scope.repository.path != null) {
+                return true;
+            }
+            return false;
         }
 
         function modified() {

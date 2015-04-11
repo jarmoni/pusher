@@ -1,7 +1,7 @@
 var app;
 (function () {
 	'use strict';
-	app = angular.module('pusher', ['ui.router']);
+	app = angular.module('pusher', ['ui.router', 'ngMockE2E']);
 	app.urlPrefix = '/api/';
 	
 	app.config(function ($stateProvider, $urlRouterProvider) {

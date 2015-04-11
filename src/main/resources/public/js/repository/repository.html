@@ -22,10 +22,10 @@
             <input type="text" class="form-control" id="path" placeholder="add path" ng-model="repository.path">
         </div>
         <div class="checkbox">
-            <label><input type="checkbox" ng-model="repository.autoCommit"> Auto-commit</label>
+            <label><input type="checkbox" ng-model="repository.autoCommit" ng-init="repository.autoCommit != null ? repository.autoCommit : repository.autoCommit=false"> Auto-commit</label>
         </div>
         <div class="checkbox">
-            <label><input type="checkbox" ng-model="repository.autoSync"> Auto-sync</label>
+            <label><input type="checkbox" ng-model="repository.autoSync" ng-init="repository.autoSync != null ? repository.autoSync : repository.autoSync=false"> Auto-sync</label>
         </div>
         <!-- debugging stuff -->
         <!--<p>dirty = {{formModified()}}</p> -->

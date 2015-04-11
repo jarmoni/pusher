@@ -3,10 +3,13 @@
 
     app.controller("RepositoriesController", function ($scope, $state, $stateParams, PusherService) {
 
-        $scope.repositories = PusherService.listRepositories();
+        PusherService.listRepositories(function(repositories) {
+            $scope.repositories = repositories;
+        });
+
 
         $scope.update = function() {
-            $scope.repositories = PusherService.listRepositories();
+
         }
 
     });
