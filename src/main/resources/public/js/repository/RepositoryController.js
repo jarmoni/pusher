@@ -31,6 +31,15 @@
             });
         }
 
+        $scope.cancel = function() {
+            if(cachedObject) {
+                applyRemoteData(cachedObject);
+            }
+            else {
+                $state.go("noRepository");
+            }
+        }
+
         $scope.update = function() {
             PusherService.updateRepository($scope.reposOrigName, $scope.repository).then(function(newRepos) {
                 applyRemoteData(newRepos);
