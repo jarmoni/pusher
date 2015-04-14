@@ -3,76 +3,76 @@
 
     app.controller("RepositoryController", function ($scope, $state, $stateParams, PusherService) {
 
-        var NEW_REPOS = "New Repository";
+        var newReposName = "New Repository";
 
-        var repository = null;
-        var reposOrigName = NEW_REPOS;
+        $scope.reposOrigName = newReposName;
+        $scope.repository = null;
+        $scope.deleteAllowed = false;
+        $scope.saveAllowed = false;
+        $scope.cancelAllowed = false;
 
-        var currentReposName = $stateParams["repositoryName"];
+        var cachedObject = null;
 
-        if(currentReposName) {
-            PusherService.getRepository(currentReposName, function(callback) {
-                repository = callback;
-                reposOrigName = repository.name;
-                $scope.repository = repository;
-                $scope.reposOrigName = reposOrigName;
-            });
-
+        if($stateParams["repositoryName"]) {
+            loadRemoteData($stateParams["repositoryName"], applyRemoteData)
         }
 
-
-        $scope.saveAllowed = function() {
-            return valid() && modified();
-        }
-
-        $scope.cancelAllowed = function() {
-            return $scope.reposOrigName === NEW_REPOS || modified();
-        }
-
-        $scope.reposName = function() {
-            return $scope.repository.name;
-        }
-
-        $scope.update = function() {
-            PusherService.update($scope.reposOrigName, $scope.repository);
-            $scope.$parent.update();
-            $scope.reposOrigName = $scope.repository.name;
-            //$state.go("repository", $scope.repository.name);
+        $scope.updateState = function() {
+            $scope.saveAllowed = isValid() && isModified();
+            $scope.cancelAllowed = isModified();
         }
 
         $scope.delete = function() {
-            PusherService.delete($scope.repository.name);
-            $scope.$parent.update();
-            $state.go("noRepository");
+            PusherService.deleteRepository($scope.reposOrigName).then(function() {
+                PusherService.listRepositories().then(function (repositories) {
+                    $scope.repositories.repositories = repositories;
+                    $state.go("noRepository");
+                });
+            });
         }
 
-        $scope.cancel = function() {
-            var repos = PusherService.getRepository($scope.reposOrigName);
-            if(repos) {
-                $scope.repository = repos;
+        $scope.update = function() {
+            PusherService.updateRepository($scope.reposOrigName, $scope.repository).then(function(newRepos) {
+                applyRemoteData(newRepos);
+                PusherService.listRepositories().then(function (repositories) {
+                    $scope.repositories.repositories = repositories;
+                });
+            });
+        }
+
+        function applyRemoteData(repository) {
+            if(repository) {
+                $scope.repository = repository;
+                $scope.reposOrigName = repository.name;
+                $scope.deleteAllowed = true;
+                cachedObject = _.cloneDeep(repository);
+                $scope.updateState();
             }
-            else {
-                $state.go("noRepository");
+        }
+
+        function loadRemoteData(name, delegateFunction) {
+            PusherService.getRepository(name).then(function (repository) {
+                delegateFunction(repository);
+            });
+        }
+
+        function isValid() {
+            var valid = false;
+            if($scope.repository && $scope.repository.name && $scope.repository.path) {
+                valid = true;
             }
+            return valid;
         }
 
-        function valid() {
-            if($scope.repository != null && $scope.repository.name != null && $scope.repository.path != null) {
-                return true;
-            }
-            return false;
+         function isModified() {
+             var modified = false;
+             if(cachedObject != null) {
+                 modified = !_.isEqual(cachedObject, $scope.repository);
+             }
+             else {
+                 modified = $scope.reposOrigName !== newReposName || $scope.repository.name || $scope.repository.path;
+             }
+             return modified;
         }
-
-        function modified() {
-            var repository = PusherService.getRepository($scope.reposOrigName);
-
-            var repos2 = { name: $scope.repository.name, path: $scope.repository.path, autoCommit: $scope.repository.autoCommit, autoSync: $scope.repository.autoSync};
-            console.log("repository=" + JSON.stringify(repository));
-            console.log("repos2=" + JSON.stringify(repos2));
-            var modified = !_.isEqual(repository, repos2);
-            console.log("modified=" + modified);
-            return modified;
-        }
-
     });
-})();
+})()

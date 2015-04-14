@@ -17,7 +17,7 @@
             <div class="list-group">
                 <!--<a ng-repeat="repository in repositories" ui-sref-active="active" ui-sref="repository">{{repository.name}}</a>-->
                 <!--<a href="#" class="list-group-item" ng-repeat="repository in repositories" ng-click="$state.go('repository', {repositoryName : 'repos1'})">-->
-                <a class="list-group-item" ng-repeat="repository in repositories" style="cursor: pointer" ng-click="$state.go('repository', {repositoryName: repository.name})">
+                <a class="list-group-item" ng-repeat="repository in repositories.repositories" style="cursor: pointer" ng-click="$state.go('repository', {repositoryName: repository.name})">
                     <h4 class="list-group-item-heading">{{repository.name}}</h4>
                 </a>
             </div>

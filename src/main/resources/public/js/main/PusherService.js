@@ -1,22 +1,47 @@
 (function () {
     "use strict";
-    app.factory('PusherService', function ($http) {
+    app.factory('PusherService', function ($http, $q) {
 
-        var PusherService = {};
-        PusherService.listRepositories = function(callbackFunction) {
-            $http.get(app.urlPrefix + 'repositories/list').success(callbackFunction);
-		};
-
-        PusherService.getRepository = function(name, callbackFunction) {
-            console.log(name);
-            $http.get(app.urlPrefix + 'repository/' + name).success(callbackFunction);
+        // public API
+        var PusherService = {
+            listRepositories: listRepositories,
+            getRepository: getRepository,
+            deleteRepository: deleteRepository,
+            updateRepository: updateRepository
         };
 
-        //PusherService.getRepository = function(name, function(callback)) {
-        //    $http.get(app.urlPrefix + "repository/get/" + name);
-        //}
-        //});
+        return PusherService;
 
-		return PusherService;
-	});
+        // private impl
+        function listRepositories() {
+            var request = $http.get(app.urlPrefix + 'repositories/list');
+            return (request.then(handleSuccess, handleError));
+        }
+
+        function getRepository(name) {
+            var request = $http.get(app.urlPrefix + "repository/get/" + name);
+            return (request.then(handleSuccess, handleError));
+        }
+
+        function deleteRepository(name) {
+            var request = $http.delete(app.urlPrefix + "repository/delete/" + name);
+            return (request.then(handleSuccess, handleError));
+        }
+
+        function updateRepository(name, repository) {
+            var request = $http.put(app.urlPrefix + "repository/update/" + name, repository);
+            return (request.then(handleSuccess, handleError));
+        }
+
+        function handleError(response) {
+            if (!angular.isObject(response.data) || !response.data.message) {
+                return ( $q.reject("An unknown error occurred.") );
+            }
+            return ( $q.reject(response.data.message) );
+        }
+
+        function handleSuccess(response) {
+            return ( response.data );
+        }
+    });
 })();

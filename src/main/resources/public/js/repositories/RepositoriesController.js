@@ -3,13 +3,18 @@
 
     app.controller("RepositoriesController", function ($scope, $state, $stateParams, PusherService) {
 
-        PusherService.listRepositories(function(repositories) {
-            $scope.repositories = repositories;
-        });
+        $scope.repositories = [];
 
+        loadRemoteData();
 
-        $scope.update = function() {
+        function applyRemoteData(repositories) {
+            $scope.repositories.repositories = repositories;
+        }
 
+        function loadRemoteData() {
+            PusherService.listRepositories().then(function (repositories) {
+                applyRemoteData(repositories);
+            });
         }
 
     });
