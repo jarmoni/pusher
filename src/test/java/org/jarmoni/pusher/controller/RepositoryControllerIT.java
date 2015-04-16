@@ -18,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 public class RepositoryControllerIT extends AbstractControllerIT {
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetRepository() throws Exception {
 		expect(this.getPusherService().getRepository("myrepos")).andReturn(createRepositoryResource());
@@ -32,7 +31,6 @@ public class RepositoryControllerIT extends AbstractControllerIT {
 		assertEquals(createRepositoryResource(), response);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testUpdateRepository() throws Exception {
 		// TODO: Strange beheaviour. Refresh of ApplicationContext seems to fail
