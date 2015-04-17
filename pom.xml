@@ -69,8 +69,6 @@
 						<goals>
 							<goal>install-node-and-npm</goal>
 						</goals>
-						<!-- optional: default phase is "generate-resources" -->
-						<!-- <phase>generate-resources</phase> -->
 						<configuration>
 							<nodeVersion>v0.12.2</nodeVersion>
 							<npmVersion>2.7.4</npmVersion>
