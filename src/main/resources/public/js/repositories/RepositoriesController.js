@@ -1,21 +1,21 @@
-(function () {
-    "use strict";
+(function() {
+	"use strict";
 
-    app.controller("RepositoriesController", function ($scope, $state, $stateParams, PusherService) {
+	app.controller("RepositoriesController", function($scope, $state, $stateParams, PusherService) {
 
-        $scope.repositories = [];
+		$scope.repositories = [];
 
-        loadRemoteData();
+		loadRemoteData();
 
-        function applyRemoteData(repositories) {
-            $scope.repositories.repositories = repositories;
-        }
+		function applyRemoteData(repositories) {
+			$scope.repositories.repositories = repositories;
+		}
 
-        function loadRemoteData() {
-            PusherService.listRepositories().then(function (repositories) {
-                applyRemoteData(repositories);
-            });
-        }
+		function loadRemoteData() {
+			PusherService.listRepositories().then(function(repositories) {
+				applyRemoteData(repositories);
+			});
+		}
 
-    });
+	});
 })();

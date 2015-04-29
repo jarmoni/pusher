@@ -6,32 +6,32 @@
 
 			<div class="row">
 				<div class="col-md-8">
-					<button type="button" class="btn btn-default" >Refresh</button>
+					<button type="button" class="btn btn-default">Refresh</button>
 					<button type="button" class="btn btn-default" ng-click="$state.go('repository', {repositoryName : null})">New</button>
 				</div>
 			</div>
 
-            <br>
-            <br>
+			<br>
+			<br>
 
-            <div class="list-group">
-                <!--<a ng-repeat="repository in repositories" ui-sref-active="active" ui-sref="repository">{{repository.name}}</a>-->
-                <!--<a href="#" class="list-group-item" ng-repeat="repository in repositories" ng-click="$state.go('repository', {repositoryName : 'repos1'})">-->
-                <a class="list-group-item" ng-repeat="repository in repositories.repositories" style="cursor: pointer" ng-click="$state.go('repository', {repositoryName: repository.name})">
-                    <h4 class="list-group-item-heading">{{repository.name}}</h4>
-                </a>
-            </div>
-            <br>
+			<div class="list-group">
+				<!--<a ng-repeat="repository in repositories" ui-sref-active="active" ui-sref="repository">{{repository.name}}</a>-->
+				<!--<a href="#" class="list-group-item" ng-repeat="repository in repositories" ng-click="$state.go('repository', {repositoryName : 'repos1'})">-->
+				<a class="list-group-item" ng-repeat="repository in repositories.repositories" style="cursor: pointer" ng-click="$state.go('repository', {repositoryName: repository.name})">
+					<h4 class="list-group-item-heading">{{repository.name}}</h4>
+				</a>
+			</div>
+			<br>
 
-            <br>
-        </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-4" ui-view></div>
-        <div class="col-md-3">
-            <div class="alert alert-warning">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>Warning!</strong> There was a problem with your network connection.
-            </div>
-        </div>
-    </div>
+			<br>
+		</div>
+		<div class="col-md-1"></div>
+		<div class="col-md-4" ui-view></div>
+		<div class="col-md-3">
+			<div class="alert alert-warning">
+				<a href="#" class="close" data-dismiss="alert">&times;</a>
+				<strong>Warning!</strong> There was a problem with your network connection.
+			</div>
+		</div>
+	</div>
 </div>

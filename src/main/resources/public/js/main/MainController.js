@@ -1,8 +1,8 @@
-(function () {
+(function() {
 	"use strict";
 
-	app.controller("MainController", function ($scope, $state, $stateParams, PusherService) {
-	
+	app.controller("MainController", function($scope, $state, $stateParams, PusherService) {
+
 
 	});
 })();
